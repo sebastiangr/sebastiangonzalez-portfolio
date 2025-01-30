@@ -1,3 +1,10 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+body {
+  margin: 0; /* Eliminar margen */
+  font-family: 'Sans Serif'; /* Establecer tipografía Sans Serif */
+  background-color: black; /* Asegurar que el fondo sea negro */
+  color: white; /* Asegurar que el texto sea blanco */
+}
