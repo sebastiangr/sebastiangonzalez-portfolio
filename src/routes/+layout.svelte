@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import '../app.css';
 </script>
 
 <div class="bg-black text-white flex justify-center gap-4 p-4 fixed top-0 left-0 right-0 font-sans">
@@ -11,4 +12,3 @@
 <div class="flex items-center justify-center min-h-screen">
   <slot />
 </div>
-
