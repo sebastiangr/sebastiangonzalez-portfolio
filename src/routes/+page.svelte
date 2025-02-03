@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css?family=Gelasio" rel="stylesheet">
 </svelte:head>
 
-<div class="text-center text-white">
+<div class="text-center m-12">
 
   <img src={Logo} alt="Sebastian Gonzalez Logo" class="w-32 h-32 mx-auto mt-8 mb-8 transition duration-1000 ease-in-out hover:rotate-180" />
 
