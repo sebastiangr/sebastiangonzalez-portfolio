@@ -1,6 +1,11 @@
 <script>
   import { onMount } from 'svelte';
   import '../app.css';
+
+  import { dev } from '$app/environment';
+  import { injectAnalytics } from '@vercel/analytics/sveltekit';
+ 
+  injectAnalytics({ mode: dev ? 'development' : 'production' });
 </script>
 
 <!-- <div class="bg-black text-white flex justify-center gap-4 p-4 fixed top-0 left-0 right-0 font-sans">
