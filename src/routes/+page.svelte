@@ -12,10 +12,10 @@
 
 <div class="text-center text-white">
 
-  <img src={Logo} alt="Sebastian Gonzalez Logo" class="w-32 h-32 mx-auto mt-8 mb-4" />
+  <img src={Logo} alt="Sebastian Gonzalez Logo" class="w-32 h-32 mx-auto mt-8 mb-8 transition duration-500 ease-in-out hover:scale-105" />
 
   <h1 class="text-2xl sm:text-4xl mb-4 uppercase">I'm Sebastián, <br>a freelancer web and app developer</h1>
-  <p class="font-sans animate-pulse">This web is under construction... come back soon</p>
+  <p class="animate-pulse mb-10">This web is under construction... come back soon</p>
 
   <h2 class="text-xl sm:text-2xl mt-8 mb-4">GET IN TOUCH</h2>
   <div class="flex justify-center">
