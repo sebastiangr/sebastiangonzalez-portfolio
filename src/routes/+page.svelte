@@ -19,17 +19,17 @@
 
   <h2 class="text-xl sm:text-2xl mt-8 mb-4">GET IN TOUCH</h2>
   <div class="flex justify-center">
-    <a href="mailto:sebastiangr@proton.me" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110">
-      <img src={IconMail} width="40" height="40" />
+    <a href="mailto:sebastiangr@proton.me" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110" aria-label="Send email">
+      <img src={IconMail} alt="Email" width="40" height="40" />
     </a>
-    <a href="https://wa.me/573003060724" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110">
-      <img src={IconWhatsapp} width="40" height="40" />
+    <a href="https://wa.me/573003060724" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110" aria-label="Send WhatsApp message">
+      <img src={IconWhatsapp} alt="WhatsApp" width="40" height="40" />
     </a>    
-    <a href="https://github.com/sebastiangr" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110">
-      <img src={IconGithub} width="40" height="40" />
+    <a href="https://github.com/sebastiangr" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110" aria-label="GitHub profile">
+      <img src={IconGithub} alt="GitHub" width="40" height="40" />
     </a> 
-    <a href="https://www.linkedin.com/in/sebastiangonzalez-co/" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110">
-      <img src={IconLinkedin} width="40" height="40" />
+    <a href="https://www.linkedin.com/in/sebastiangonzalez-co/" target="_blank" rel="noopener noreferrer" class="m-4 transition duration-500 ease-in-out hover:scale-110" aria-label="LinkedIn profile">
+      <img src={IconLinkedin} alt="LinkedIn" width="40" height="40" />
     </a>
   </div>
 </div>
