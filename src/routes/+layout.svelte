@@ -1,4 +1,14 @@
+<!-- src/routes/+layout.svelte -->
 <script>
+  import '../app.css'; // Ensure your global styles are imported
+</script>
+
+<!-- /* Apply base font smoothing */ -->
+<div class="antialiased text-gray-900">
+  <slot />
+</div>
+
+<!-- <script>
   import { onMount } from 'svelte';
   import '../app.css';
 
@@ -6,7 +16,7 @@
   import { injectAnalytics } from '@vercel/analytics/sveltekit';
  
   injectAnalytics({ mode: dev ? 'development' : 'production' });
-</script>
+</script> -->
 
 <!-- <div class="bg-black text-white flex justify-center gap-4 p-4 fixed top-0 left-0 right-0 font-sans">
   <a href="/" class="text-white no-underline">Home</a>
@@ -14,7 +24,7 @@
   <a href="/contacto" class="text-white no-underline">Contacto</a>
 </div> -->
 
-<div class="body-bg flex items-center justify-center min-h-screen">
+<!-- <div class="body-bg flex items-center justify-center min-h-screen">
   <slot />
 </div>
 
@@ -26,4 +36,4 @@
     
     background-blend-mode: multiply;  
   }  
-</style>
+</style> -->

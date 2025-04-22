@@ -11,6 +11,10 @@ body {
   color: white; /* Asegurar que el texto sea blanco */
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 h1, h2 {
   font-family: "Gabarito", serif;
   font-optical-sizing: auto;

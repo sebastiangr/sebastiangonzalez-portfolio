@@ -1,4 +1,90 @@
 <script lang="ts">
+	import Home from '$lib/sections/Home.svelte';
+	import AboutMe from '$lib/sections/AboutMe.svelte';
+	import Portfolio from '$lib/sections/Portfolio.svelte';
+	import Skills from '$lib/sections/Skills.svelte';
+	import Contact from '$lib/sections/Contact.svelte';
+	import FullScreenMenu from '$lib/components/FullScreenMenu.svelte';
+	import { toggleMenu } from '$lib/stores/menuStore';
+
+  // Placeholder for Hamburger
+  function PlaceholderHamburger() {
+    return `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>`;
+  }
+</script>
+
+<svelte:head>
+	<title>sebastiangonzalez.co - Portfolio</title>
+	<meta name="description" content="Freelance fullstack and app developer." />
+</svelte:head>
+
+<main>
+	<!-- The Home section is fixed and covers the screen initially (z-10) -->
+  <!-- Hamburger Menu Button -->
+
+  <div class="fixed top-0 right-0 p-4 z-50">
+    <button
+      on:click={toggleMenu}
+      class="bg-white p-2 rounded-md hover:bg-white focus:outline-none 
+      focus:ring-2 focus:ring-inset focus:ring-white z-50"
+      aria-label="Open main menu" >
+        {@html PlaceholderHamburger()}
+    </button>
+  </div>
+
+	<Home />
+
+	<!-- Wrapper for the rest of the content -->
+	<!--
+        - relative: Establishes stacking context for z-index
+        - z-20: Ensures this scrolls OVER the Home section (z-10)
+        - mt-[100vh]: *** THIS IS THE KEY FIX ***
+          Pushes this entire block down by the height of the viewport,
+          so it visually starts AFTER the Home section.
+        - bg-white:  Needed so this block's background obscures Home as it scrolls up.
+                     Adjust if your first scrollable section (AboutMe) has a different
+                     background you want shown immediately.
+    -->
+	<div class="relative z-20 bg-black mt-[100vh]"> 
+		<!-- Add subsequent sections here. They will scroll normally. -->
+		<AboutMe />
+		<Portfolio />
+		<Skills />
+		<Contact />
+	</div>
+
+	<!-- The Full Screen Menu (conditionally rendered via store) -->
+	<FullScreenMenu />
+</main>
+
+<!-- Styles for this page layout (optional, can go in app.css) -->
+<style>
+	/* Ensure the main content starts visually 'after' the fixed home screen */
+	/* This isn't strictly needed because Home is fixed, but can help clarity */
+	/* No explicit style needed here as the flow is natural with fixed Home */
+
+  /* Styling the scrollbar subtly (optional) */
+  :global(::-webkit-scrollbar) {
+    width: 8px;
+  }
+  :global(::-webkit-scrollbar-track) {
+    background: #111;
+  }
+  :global(::-webkit-scrollbar-thumb) {
+    background: #222;
+    border-radius: 4px;
+  }
+  :global(::-webkit-scrollbar-thumb:hover) {
+    background: #555;
+  }
+
+  /* Ensure body takes full height for scroll anchoring if needed, though usually default */
+  :global(body) {
+    /* No specific style usually needed here unless defaults were overridden */
+  }
+</style>
+
+<!-- <script lang="ts">
   import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
   import IconLinkedin from "$lib/assets/icon-linkedin.svg";
   import IconWhatsapp from "$lib/assets/icon-whatsapp.svg";
@@ -32,4 +118,4 @@
       <img src={IconLinkedin} alt="LinkedIn" width="40" height="40" />
     </a>
   </div>
-</div>
+</div> -->

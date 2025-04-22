@@ -1,4 +1,36 @@
-<script lang="ts">
+<!-- src/lib/sections/Portfolio.svelte -->
+<section id="portfolio" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 bg-black text-white">
+  <h2 class="text-4xl sm:text-5xl font-bold mb-10 sm:mb-16 text-center">Portfolio</h2>
+
+  <!-- Simple Horizontal Scroll Container for Carousel -->
+  <div class="w-full max-w-6xl overflow-x-auto pb-8">
+      <div class="flex space-x-8 px-4">
+          <!-- Repeat this block for each portfolio item -->
+          {#each Array(5) as _, i} <!-- Example: 5 items -->
+          <div class="flex-shrink-0 w-72 sm:w-80 bg-white rounded-lg shadow-lg overflow-hidden">
+              <img
+                  src="https://via.placeholder.com/400x250/eeeeee/777777?text=Project+{i + 1}+Image"
+                  alt="Project {i + 1}"
+                  class="w-full h-48 object-cover"
+              />
+               <div class="p-6">
+                   <h3 class="text-xl font-semibold mb-2">Project Title {i + 1}</h3>
+                   <p class="text-gray-600 text-sm">
+                       A brief description of the project, technologies used, or its main features. Keep it concise.
+                   </p>
+                    <!-- Optional: Link to project/repo -->
+                   <!-- <a href="#" class="mt-4 inline-block text-teal-600 hover:text-teal-800 font-medium">View Project →</a> -->
+               </div>
+          </div>
+          {/each}
+          <!-- End of repeatable block -->
+      </div>
+  </div>
+  <p class="text-center text-gray-500 mt-4 text-sm italic px-4">Scroll horizontally to see more projects →</p>
+</section>
+
+
+<!-- <script lang="ts">
   import { onMount } from 'svelte';
   
   // Sample portfolio items - replace with your actual projects
@@ -213,4 +245,4 @@
     0%, 100% { opacity: 0.4; }
     50% { opacity: 0.9; }
   }
-</style>
+</style> -->

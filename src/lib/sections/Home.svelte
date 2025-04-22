@@ -1,87 +1,65 @@
 <script lang="ts">
-  import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
-  
-  export let toggleMenu: () => void;
+  // This section is for displaying skills and technologies.
+  // You can customize the skills and their styles as per your preference.
+  import { toggleMenu } from '$lib/stores/menuStore';
+  import { fade } from 'svelte/transition'; // Optional transition for elements
+
+  // Placeholder for Logo
+  function PlaceholderLogo() {
+      return `<svg class="h-10 w-auto text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`;
+  }
+
 </script>
 
-<div class="home-container">
-  <div class="content">
-    <h1 class="title">Sebastián González</h1>
-    <p class="subtitle">Web & App Developer</p>
-    <div class="scroll-indicator">
-      <span>Scroll Down</span>
-      <div class="arrow">↓</div>
-    </div>
-  </div>
-</div>
+<section
+  id="home"
+  class="fixed inset-0 h-screen w-screen z-10 flex flex-col justify-between bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white p-6 sm:p-10"
+>
+  <!-- Header Row -->
+  <div class="flex justify-between items-center w-full">
+       <!-- Logo Placeholder -->
+      <div class="text-2xl font-bold">
+           {@html PlaceholderLogo()}
+           <!-- Replace with your actual <Logo /> component or <img> tag -->
+      </div>
 
+
+  </div>
+
+  <!-- Optional: Centered content like Name/Title -->
+  <div transition:fade class="flex flex-col items-center justify-center text-center flex-grow -mt-16">
+       <h1 class="text-5xl md:text-7xl font-bold mb-4 animate-fade-in-up">Your Name</h1>
+       <p class="text-xl md:text-2xl text-gray-300 animate-fade-in-up animation-delay-300">Web Developer / Designer / Etc</p>
+       <!-- Add maybe a subtle down arrow hint -->
+       <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-500 animate-bounce">
+           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+       </div>
+  </div>
+   <!-- <div />  -->
+   <!-- Dummy div to help justify-between -->
+</section>
+
+<!-- Basic Animation Styles (Add to app.css or a global style block) -->
 <style>
-  .home-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    background: linear-gradient(to bottom, #2d2d2d 0%, rgb(19, 19, 19) 100%);
-    position: relative;
-    overflow: hidden;
+  @keyframes fadeInUp {
+      from { opacity: 0; transform: translate3d(0, 40px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
   }
-  
-  .content {
-    text-align: center;
-    z-index: 1;
+  .animate-fade-in-up {
+      animation: fadeInUp 0.8s ease-out forwards;
+      opacity: 0; /* Start hidden */
   }
-  
-  .title {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    letter-spacing: 0.3rem;
-    
-    @media (min-width: 768px) {
-      font-size: 5rem;
-    }
+  .animation-delay-300 {
+      animation-delay: 0.3s;
   }
-  
-  .subtitle {
-    font-size: 1.5rem;
-    opacity: 0.8;
-    margin-bottom: 2rem;
-    
-    @media (min-width: 768px) {
-      font-size: 2rem;
-    }
+  /* Add bounce animation if needed */
+  @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+      40% {transform: translateY(-15px) translateX(-50%);}
+      60% {transform: translateY(-7px) translateX(-50%);}
   }
-  
-  .scroll-indicator {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    opacity: 0.7;
-    animation: pulse 2s infinite;
+  .animate-bounce {
+       animation: bounce 2s infinite;
   }
-  
-  .arrow {
-    font-size: 1.5rem;
-    margin-top: 0.5rem;
-  }
-  
-  @keyframes pulse {
-    0% {
-      opacity: 0.7;
-      transform: translateX(-50%) translateY(0);
-    }
-    50% {
-      opacity: 1;
-      transform: translateX(-50%) translateY(10px);
-    }
-    100% {
-      opacity: 0.7;
-      transform: translateX(-50%) translateY(0);
-    }
-  }
+
 </style>
