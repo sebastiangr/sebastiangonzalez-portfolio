@@ -1,5 +1,5 @@
 <!-- src/lib/sections/AboutMe.svelte -->
-<section id="about-me" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 bg-black text-white">
+<section id="about-me" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">
   <h2 class="text-4xl sm:text-5xl font-bold mb-10 sm:mb-16 text-center">About Me</h2>
   <div class="max-w-4xl w-full flex flex-col md:flex-row items-center gap-10 md:gap-16">
       <div class="w-full md:w-1/2 text-lg text-gray-700 space-y-4 text-center md:text-left">

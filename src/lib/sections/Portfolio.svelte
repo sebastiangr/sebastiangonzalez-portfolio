@@ -1,5 +1,5 @@
 <!-- src/lib/sections/Portfolio.svelte -->
-<section id="portfolio" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 bg-black text-white">
+<section id="portfolio" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">
   <h2 class="text-4xl sm:text-5xl font-bold mb-10 sm:mb-16 text-center">Portfolio</h2>
 
   <!-- Simple Horizontal Scroll Container for Carousel -->

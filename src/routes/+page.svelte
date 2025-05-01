@@ -5,7 +5,7 @@
 	import Skills from '$lib/sections/Skills.svelte';
 	import Contact from '$lib/sections/Contact.svelte';
 	import FullScreenMenu from '$lib/components/FullScreenMenu.svelte';
-	import { toggleMenu } from '$lib/stores/menuStore';
+	import { isMenuOpen, toggleMenu } from '$lib/stores/menuStore';
 
   // Placeholder for Hamburger
   function PlaceholderHamburger() {
@@ -18,40 +18,53 @@
 	<meta name="description" content="Freelance fullstack and app developer." />
 </svelte:head>
 
-<main>
+<!-- <main class="page-content" class:blurred={isMenuOpen}> -->
+<main class="overflow-hidden">
 	<!-- The Home section is fixed and covers the screen initially (z-10) -->
   <!-- Hamburger Menu Button -->
 
-  <div class="fixed top-0 right-0 p-4 z-50">
-    <button
+  <!-- <div class="fixed top-0 right-0 p-4 z-50"> -->
+    <!-- <button
       on:click={toggleMenu}
       class="bg-white p-2 rounded-md hover:bg-white focus:outline-none 
       focus:ring-2 focus:ring-inset focus:ring-white z-50"
       aria-label="Open main menu" >
         {@html PlaceholderHamburger()}
-    </button>
-  </div>
+    </button> -->
 
-	<Home />
+    <!-- Hamburger test -->
+    <!-- <div class="menu-icon"> -->
+      <!-- <button class="menu-icon__checkbox" on:click={toggleMenu} aria-label="Open main menu">  </button> -->
+      <!-- <button class="menu-icon__checkbox" aria-label="Open main menu">  </button> -->
+      <!-- <div>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
 
-	<!-- Wrapper for the rest of the content -->
-	<!--
+  </div> -->
+
+  <!-- <FullScreenMenu /> -->
+
+  <Home />
+
+  <!-- Wrapper for the rest of the content -->
+  <!--
         - relative: Establishes stacking context for z-index
         - z-20: Ensures this scrolls OVER the Home section (z-10)
         - mt-[100vh]: *** THIS IS THE KEY FIX ***
           Pushes this entire block down by the height of the viewport,
           so it visually starts AFTER the Home section.
         - bg-white:  Needed so this block's background obscures Home as it scrolls up.
-                     Adjust if your first scrollable section (AboutMe) has a different
-                     background you want shown immediately.
+                    Adjust if your first scrollable section (AboutMe) has a different
+                    background you want shown immediately.
     -->
-	<div class="relative z-20 bg-black mt-[100vh]"> 
-		<!-- Add subsequent sections here. They will scroll normally. -->
-		<AboutMe />
-		<Portfolio />
-		<Skills />
-		<Contact />
-	</div>
+  <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative z-20 mt-[100vh]"> >
+    <AboutMe />
+    <Portfolio />
+    <Skills />
+    <Contact />
+  </div>
 
 	<!-- The Full Screen Menu (conditionally rendered via store) -->
 	<FullScreenMenu />
@@ -59,6 +72,26 @@
 
 <!-- Styles for this page layout (optional, can go in app.css) -->
 <style>
+
+  .main-container {
+    background-color: var(--color-black, #121212);
+    filter: blur(0px);
+    -webkit-filter: blur(0px);
+    -moz-filter: blur(0px);
+    -o-filter: blur(0px);
+    -ms-filter: blur(0px);
+    transition: filter 0.6s ease; /* Adjust duration as needed */
+  }
+
+  .main-container.blurred {
+    filter: blur(6px);
+    -webkit-filter: blur(6px);
+    -moz-filter: blur(6px);
+    -o-filter: blur(6px);
+    -ms-filter: blur(6px);
+  }
+
+
 	/* Ensure the main content starts visually 'after' the fixed home screen */
 	/* This isn't strictly needed because Home is fixed, but can help clarity */
 	/* No explicit style needed here as the flow is natural with fixed Home */
@@ -82,6 +115,12 @@
   :global(body) {
     /* No specific style usually needed here unless defaults were overridden */
   }
+
+
+
+
+
+
 </style>
 
 <!-- <script lang="ts">

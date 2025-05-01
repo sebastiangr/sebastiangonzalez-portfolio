@@ -26,3 +26,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .qodo
 .vite
+
+.txt
+
+How to use SCSS (Sass) with Svelte and media query mixins.txt

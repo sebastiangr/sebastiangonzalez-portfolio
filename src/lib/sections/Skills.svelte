@@ -1,4 +1,4 @@
-<section id="skills" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 bg-black text-white">
+<section id="skills" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">
   <h2 class="text-4xl sm:text-5xl font-bold mb-8 text-center">Skills</h2>
   <p class="max-w-3xl text-lg text-gray-600 text-center mb-12 sm:mb-16">
       Here's a snapshot of the technologies and tools I work with regularly. I'm always eager to learn and adapt to new challenges.
@@ -22,3 +22,5 @@
        <!-- Add more skills as needed -->
   </div>
 </section>
+
+<!-- background-image: linear-gradient(to right, #434343 0%, black 100%); -->
