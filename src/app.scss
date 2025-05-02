@@ -1,9 +1,12 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@use 'tailwindcss/base';
+@use 'tailwindcss/components';
+@use 'tailwindcss/utilities';
+// @import './typed.scss';
 @import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz@6..12&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+
 
 :root {
   /* Brand colors */
@@ -28,12 +31,13 @@ html {
 }
 
 h1, h2 {
-  font-family: "Gabarito", serif;
+  font-family: "JetBrains Mono", monospace;
   font-optical-sizing: auto;
   font-weight: 500;
   font-style: normal;
-  letter-spacing: 0.2rem;
 }
+
+
 
 p {
   font-family: "Nunito Sans", serif;
@@ -48,3 +52,25 @@ p {
 h1, h2, h3, p {
   color: #f5f5f5;
 }
+
+
+// testing scss
+// $primary-color: #3498db;
+// $secondary-color: #e74c3c;
+
+// h1 {
+//   background-color: $primary-color;
+  
+//   &:hover {
+//     background-color: $secondary-color;
+//   }
+// }
+
+// .typed-text {
+//   // @include typed("Hello! I'm Sebastián", [.1, null, null, .5]);
+//   @include typed("String 1" (caret: true, iterations: 1));
+// }
+
+// .profile-text {
+//   @include typed("Web Developer", "Graphic Designer", "Freelancer", "Full Stack Developer", "Frontend Developer", "Backend Developer");
+// }

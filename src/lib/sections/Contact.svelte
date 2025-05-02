@@ -20,6 +20,7 @@
 </script>
 
 <section id="" class="min-h-screen w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">
+  <!-- TODO: Typewriter effect -->
   <h2 class="text-4xl sm:text-6xl font-bold mb-10 sm:mb-16 text-center text-teal-400">Let's Talk</h2>
 
   <!-- Contact Form -->

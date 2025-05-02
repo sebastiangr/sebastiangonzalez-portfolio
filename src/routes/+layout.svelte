@@ -1,6 +1,6 @@
 <!-- src/routes/+layout.svelte -->
 <script>
-  import '../app.css'; // Ensure your global styles are imported
+  import '../app.scss'; // Ensure your global styles are imported
 </script>
 
 <!-- /* Apply base font smoothing */ -->

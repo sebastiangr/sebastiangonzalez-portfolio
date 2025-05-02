@@ -15,6 +15,7 @@
 
 
   $effect(() => {
+
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 2;
       const anchorList = get(anchors);
@@ -124,6 +125,7 @@
 <svelte:head>
 	<title>sebastiangonzalez.co - Portfolio</title>
 	<meta name="description" content="Freelance fullstack and app developer." />
+  <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
 </svelte:head>
 
 <!-- <main class="page-content" class:blurred={isMenuOpen}> -->
@@ -132,7 +134,7 @@
   <!-- Hamburger Menu Button -->
 
   <!-- <Home /> -->
-  <section id="home"><Home /></section>
+  <section ><Home /></section>
 
   <!-- Wrapper for the rest of the content -->
   <!--

@@ -1,4 +1,5 @@
 <section id="" class="w-full flex flex-col items-center justify-center py-32 px-6 sm:px-10 text-white">
+  <!-- TODO: Typewriter effect -->
   <h2 class="text-4xl sm:text-5xl font-bold mb-8 text-center">Skills</h2>
   <p class="max-w-3xl text-lg text-gray-600 text-center mb-12 sm:mb-16">
       Here's a snapshot of the technologies and tools I work with regularly. I'm always eager to learn and adapt to new challenges.
