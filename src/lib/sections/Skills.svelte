@@ -1,7 +1,15 @@
-<section id="skills" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">
+<section id="" class="w-full flex flex-col items-center justify-center py-32 px-6 sm:px-10 text-white">
   <h2 class="text-4xl sm:text-5xl font-bold mb-8 text-center">Skills</h2>
   <p class="max-w-3xl text-lg text-gray-600 text-center mb-12 sm:mb-16">
       Here's a snapshot of the technologies and tools I work with regularly. I'm always eager to learn and adapt to new challenges.
+  </p>
+
+  <p class="max-w-3xl text-lg text-gray-600 text-center mb-12 sm:mb-16">
+      I'm a firm believer in the power of technology to improve people's lives. As a developer, I strive to create solutions that are both functional and beautiful. I'm passionate about staying up-to-date with the latest trends and advancements in the field, and I'm always looking for new ways to improve my skills.
+  </p>
+
+  <p class="max-w-3xl text-lg text-gray-600 text-center mb-12 sm:mb-16">
+      In addition to my technical skills, I possess excellent communication and teamwork skills, which enable me to effectively collaborate with cross-functional teams and deliver high-quality results.
   </p>
 
   <!-- Proposed Skill Visualization: Tag Cloud / Badges -->

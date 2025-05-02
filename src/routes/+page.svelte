@@ -5,12 +5,120 @@
 	import Skills from '$lib/sections/Skills.svelte';
 	import Contact from '$lib/sections/Contact.svelte';
 	import FullScreenMenu from '$lib/components/FullScreenMenu.svelte';
+  import ArrowUp from "$lib/assets/arrow-up.svg";
+  import ArrowDown from "$lib/assets/arrow-down.svg";
 	import { isMenuOpen, toggleMenu } from '$lib/stores/menuStore';
+	import Navigation from '$lib/components/Navigation.svelte';
+  import { anchors, currentIndex } from "$lib/stores/navigationStore";
+  import { onMount } from 'svelte';
+  import { get } from 'svelte/store';
 
-  // Placeholder for Hamburger
-  function PlaceholderHamburger() {
-    return `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>`;
-  }
+
+  $effect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+      const anchorList = get(anchors);
+
+      if (window.scrollY === 0) {
+        currentIndex.set(0);
+        return;
+      }
+
+      const index = anchorList.findIndex((anchor) => {
+        const section = document.querySelector(anchor);
+        if (section) {
+          const { top, height } = section.getBoundingClientRect();
+          const sectionTop = top + window.scrollY;
+          const sectionBottom = sectionTop + height;
+
+          return scrollPosition >= sectionTop && scrollPosition < sectionBottom;
+        }
+        return false;
+      });
+
+      if (index !== -1) {
+        console.log(`Current index: ${index}`);
+        console.log(`Current anchor: ${anchorList[index]}`);
+        currentIndex.set(index);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
+
+
+  // SVELTE 4 - WORKING PARTIALLY
+  // onMount(() => {
+  //   const handleScroll = () => {
+  //     const scrollPosition = window.scrollY + window.innerHeight / 2; // Use the middle of the viewport as the reference point
+  //     const anchorList = get(anchors);
+
+  //     // Handle the case where the user scrolls to the very top of the page
+  //     if (window.scrollY === 0) {
+  //       currentIndex.set(0); // Set index to 0 for the "Home" section
+  //       return;
+  //     }
+
+  //     // Find the index of the section currently in view
+  //     const index = anchorList.findIndex((anchor) => {
+  //       const section = document.querySelector(anchor);
+  //       if (section) {
+  //         const { top, height } = section.getBoundingClientRect();
+  //         const sectionTop = top + window.scrollY; // Absolute position of the section's top
+  //         const sectionBottom = sectionTop + height;
+
+  //         // Check if the scroll position is within the section's bounds
+  //         return scrollPosition >= sectionTop && scrollPosition < sectionBottom;
+  //       }
+  //       return false;
+  //     });
+
+  //     if (index !== -1) {
+  //       // Update the current index
+  //       console.log(`Current index: ${index}`);
+  //       console.log(`Current anchor: ${anchorList[index]}`);
+  //       currentIndex.set(index); // Update the global current index
+  //     }
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // });
+
+
+
+
+
+
+  // onMount(() => {
+  //   const handleScroll = () => {
+  //     const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+  //     console.log(`Scroll position: ${scrollPosition}`);
+
+  //     // Update the current index based on the scroll position
+  //     const anchorList = get(anchors);
+  //     const index = anchorList.findIndex((anchor) => {
+  //       const section = document.querySelector(anchor);
+  //       if (section) {
+  //         const { top, bottom } = section.getBoundingClientRect();
+  //         return top <= scrollPosition && bottom > scrollPosition;
+  //       }
+  //       return false;
+  //     });
+
+  //     if (index !== -1) {
+  //       console.log(`Current index: ${index}`);
+  //       console.log(`Current anchor: ${anchorList[index]}`);
+  //       currentIndex.set(index); // Update the global current index
+  //     }
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // });
+  
 </script>
 
 <svelte:head>
@@ -23,30 +131,8 @@
 	<!-- The Home section is fixed and covers the screen initially (z-10) -->
   <!-- Hamburger Menu Button -->
 
-  <!-- <div class="fixed top-0 right-0 p-4 z-50"> -->
-    <!-- <button
-      on:click={toggleMenu}
-      class="bg-white p-2 rounded-md hover:bg-white focus:outline-none 
-      focus:ring-2 focus:ring-inset focus:ring-white z-50"
-      aria-label="Open main menu" >
-        {@html PlaceholderHamburger()}
-    </button> -->
-
-    <!-- Hamburger test -->
-    <!-- <div class="menu-icon"> -->
-      <!-- <button class="menu-icon__checkbox" on:click={toggleMenu} aria-label="Open main menu">  </button> -->
-      <!-- <button class="menu-icon__checkbox" aria-label="Open main menu">  </button> -->
-      <!-- <div>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-
-  </div> -->
-
-  <!-- <FullScreenMenu /> -->
-
-  <Home />
+  <!-- <Home /> -->
+  <section id="home"><Home /></section>
 
   <!-- Wrapper for the rest of the content -->
   <!--
@@ -60,18 +146,29 @@
                     background you want shown immediately.
     -->
   <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative z-20 mt-[100vh]"> >
-    <AboutMe />
+    <!-- <AboutMe />
     <Portfolio />
     <Skills />
-    <Contact />
+    <Contact /> -->
+    <section id="about-me"><AboutMe /></section>
+    <section id="portfolio"><Portfolio /></section>
+    <section id="skills"><Skills /></section>
+    <section id="contact"><Contact /></section>
   </div>
+
+  <Navigation />
 
 	<!-- The Full Screen Menu (conditionally rendered via store) -->
 	<FullScreenMenu />
 </main>
 
-<!-- Styles for this page layout (optional, can go in app.css) -->
+
 <style>
+
+  section {
+    /* scroll-snap-align: start;
+    min-height: 100vh; */
+  }
 
   .main-container {
     background-color: var(--color-black, #121212);
@@ -80,7 +177,7 @@
     -moz-filter: blur(0px);
     -o-filter: blur(0px);
     -ms-filter: blur(0px);
-    transition: filter 0.6s ease; /* Adjust duration as needed */
+    transition: filter 0.6s ease;
   }
 
   .main-container.blurred {
@@ -90,7 +187,6 @@
     -o-filter: blur(6px);
     -ms-filter: blur(6px);
   }
-
 
 	/* Ensure the main content starts visually 'after' the fixed home screen */
 	/* This isn't strictly needed because Home is fixed, but can help clarity */
@@ -117,12 +213,15 @@
   }
 
 
-
-
-
+  .nav-container img {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+  }
 
 </style>
 
+<!-- OLD UNDER CONSTRUCTION PAGE -->
 <!-- <script lang="ts">
   import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
   import IconLinkedin from "$lib/assets/icon-linkedin.svg";

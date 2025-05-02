@@ -4,6 +4,7 @@
   import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
   import { isMenuOpen, toggleMenu } from '$lib/stores/menuStore';
   import { fade } from 'svelte/transition'; // Optional transition for elements
+  import ArrowDown from "$lib/assets/arrow-down.svg";
 
   // Placeholder for Logo
   function PlaceholderLogo() {
@@ -12,7 +13,7 @@
 </script>
 
 <section
-  id="home"
+  id=""
   class="{$isMenuOpen ? 'blurred' : ''} fixed inset-0 h-screen w-screen z-10 flex flex-col justify-between  text-white p-6 sm:p-10"
 >
 <!-- bg-gradient-to-br from-gray-800 via-gray-900 to-black -->
@@ -25,8 +26,8 @@
     </h1>
     <p class="text-xl md:text-2xl text-gray-300 animate-fade-in-up animation-delay-300">Web Developer / Designer / Etc</p>
     <!-- Add maybe a subtle down arrow hint -->
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-500 animate-bounce">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">      
+      <img src="{ArrowDown}" alt=" Arrow Down" class="h-10 w-auto"/>
     </div>
   </div>
    <!-- <div />  -->
