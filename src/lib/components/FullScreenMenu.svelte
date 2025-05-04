@@ -21,7 +21,7 @@
 <!-- MENU OVERLAY -->
 {#if $isMenuOpen}
 	<div transition:slide={{ duration: 400, axis: 'y', easing: t => t}}
-		id="menu-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center text-white"
+		id="menu-overlay" class="fixed inset-0 z-40 flex flex-col items-center justify-center text-white"
 		role="dialog"
 		aria-modal="true">		
 		<nav>
@@ -41,13 +41,13 @@
 {/if}
 
 <!-- LOGO -->
-<div class="logo-header fixed top-0 left-0 z-50">
+<div class="logo-header fixed top-0 left-0 z-40">
   <!-- <img src={Logo} alt="Sebastian Gonzalez Logo" class="transition duration-1000 ease-in-out hover:rotate-180" /> -->
   <img src={Logo} alt="Sebastian Gonzalez Logo" class="" />
 </div>
 
 <!-- MENU HAMBURGER -->
-<div class="menu-button-wrapper fixed top-0 right-0 p-4 z-50">
+<div class="menu-button-wrapper fixed top-0 right-0 p-4 z-40">
   <div class="menu-hamburger">
     <button class="menu-button" onclick={toggleMenu} aria-label="Open main menu"></button>
     <div class="menu-bars" class:active={$isMenuOpen}>

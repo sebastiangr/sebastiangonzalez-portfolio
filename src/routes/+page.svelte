@@ -134,7 +134,7 @@
   <!-- Hamburger Menu Button -->
 
   <!-- <Home /> -->
-  <section ><Home /></section>
+  <!-- <section ><Home /></section> -->
 
   <!-- Wrapper for the rest of the content -->
   <!--
@@ -147,7 +147,8 @@
                     Adjust if your first scrollable section (AboutMe) has a different
                     background you want shown immediately.
     -->
-  <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative z-20 mt-[100vh]"> >
+  <!-- <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative z-20 mt-[100vh]"> > -->
+  <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative">
     <!-- <AboutMe />
     <Portfolio />
     <Skills />

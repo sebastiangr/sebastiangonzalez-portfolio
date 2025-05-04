@@ -1,13 +1,19 @@
-<!-- src/routes/+layout.svelte -->
 <script>
-  import '../app.scss'; // Ensure your global styles are imported
+	import Preloader from '$lib/components/Preloader.svelte';
+  import '../app.scss';
 </script>
 
 <!-- /* Apply base font smoothing */ -->
-<div class="antialiased text-gray-900">
+<div class="antialiased">
+
+  <Preloader />
+
   <slot />
 </div>
 
+
+
+<!-- ___OLD___ REVIEW AND DELETE -->
 <!-- <script>
   import { onMount } from 'svelte';
   import '../app.css';
