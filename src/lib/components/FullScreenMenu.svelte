@@ -2,6 +2,7 @@
 	import { isMenuOpen, closeMenu, toggleMenu } from '$lib/stores/menuStore';
 	import { fade, slide } from 'svelte/transition';
   import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
+  // import Logo from "/images/sebastiangonzalez.co-logo.svg";
 
 	// List of navigation items
 	const navItems = [

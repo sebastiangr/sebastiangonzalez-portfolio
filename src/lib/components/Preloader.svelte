@@ -1,260 +1,112 @@
 <script lang="ts">
   import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
-  import { onDestroy } from 'svelte';
-	import { browser } from '$app/environment';
-	import { loadingStore, isFullyLoaded } from '$lib/stores/loadingStore';
+  // import Logo from "/images/sebastiangonzalez.co-logo.svg";
+  import { fade, scale } from 'svelte/transition';
 
-	// --- Configuration ---
-	const PROGRESS_TICK_MS = 100;       // How often to update simulated progress
-	const MAX_SIMULATED_PROGRESS = 95; // Don't let simulation reach 100%
-  const FADE_OUT_DELAY_MS = 100;      // Delay after fully loaded before starting fades
-  const INNER_FADE_DURATION_MS = 500; // Logo/text fade duration (Tailwind: duration-500)
-  const CONTAINER_FADE_DURATION_MS = 300; // Background fade duration (Tailwind: duration-300)
-
-  // Props
-  let { logoSrc = '/logo.svg' } = $props();
-
-	// --- State ---
-	let progress = $state(0);             // Progress bar percentage (0-100)
-	let isVisible = $state(true);         // Controls presence in DOM via {#if}
-	let showInnerContent = $state(false); // Controls logo/text fade/scale animation
-  let isFadingOutContainer = $state(false); // Controls the final container fade-out
-	let ellipsisStage = $state(0);
-  let internalFullyLoaded = $state(false); // Local state to track when loading completed
-
-  let progressIntervalId: ReturnType<typeof setInterval> | null = null; // Store interval ID
-
-  // --- Derived State --- REMOVE?
-  let rotation = $derived(progress * 3.6); // Calculate rotation degrees (0-360)
+  let ellipsisStage = $state(0);
   let ellipsis = $derived('.'.repeat(ellipsisStage)); // Calculate ellipsis string
-  
 
-  // --- Effects ---
-
-  // EFFECT 1
-  // Effect to initialize, handle entry animation, and start intervals
   $effect(() => {
-    if (!browser) return; // Only run client-side
+    const interval = setInterval(() => {
+      ellipsisStage = (ellipsisStage + 1) % 4; // Cycle through 0 to 3
+    }, 600); // Change every 500ms
 
-    console.log('Preloader effect: Initializing...');
-    // Reset progress on mount (useful for SPA navigations if component remounts)
-    progress = 0;
-    isFadingOutContainer = false;
-    showInnerContent = false;
-    internalFullyLoaded = false;
-
-		// 1. Trigger INNER CONTENT entry animation shortly after mount
-		const entryTimer = setTimeout(() => {
-      console.log('Preloader effect: Triggering INNER content animation');
-			showInnerContent = true;
-		}, 50);
-
-		// 2. Start SIMULATED Progress Interval (if not already loaded)
-    // Clear any previous interval first
-    if (progressIntervalId) clearInterval(progressIntervalId);
-
-    if (!isFullyLoaded($loadingStore)) {
-      console.log('Preloader effect: Starting progress simulation interval.');
-      progressIntervalId = setInterval(() => {
-        // Only advance progress if not yet fully loaded and below cap
-        if (!internalFullyLoaded && progress < MAX_SIMULATED_PROGRESS) {
-          progress += 1; // Adjust increment step if needed
-        } else {
-          // Stop simulating if fully loaded or cap reached
-          if (progressIntervalId) {
-            console.log('Preloader effect: Clearing progress interval (loaded or cap reached).');
-            clearInterval(progressIntervalId);
-            progressIntervalId = null;
-          }
-        }
-      }, PROGRESS_TICK_MS);
-    } else {
-      console.log('Preloader effect: Already fully loaded, skipping progress interval.');
-      progress = 100; // Ensure bar is full if loaded instantly
-      internalFullyLoaded = true; // Mark as loaded immediately
-      // Directly trigger fade out sequence (handled by the next effect)
-    }
-
-
-		// 3. Start Ellipsis Animation Interval
-		const ellipsisInterval = setInterval(() => {
-			ellipsisStage = (ellipsisStage + 1) % 4;
-		}, 400);
-
-    // 4. Cleanup Function
-		return () => {
-      console.log('Preloader effect: Cleanup.');
-			clearTimeout(entryTimer);
-			if (progressIntervalId) clearInterval(progressIntervalId);
-			clearInterval(ellipsisInterval);
-		};
-	});
-
-  // EFFECT 2  
-  // Effect to listen for window.onload
-  $effect(() => {
-    if (!browser) return;
-
-    const handleLoad = () => {
-      console.log('Preloader: window.onload fired.');
-      // Update the store only if not already marked as loaded
-      if (!$loadingStore.windowLoaded) {
-        loadingStore.update(s => ({ ...s, windowLoaded: true }));
-      }
-    };
-
-    if (document.readyState === 'complete') {
-      // If already loaded when script runs
-      handleLoad();
-    } else {
-      window.addEventListener('load', handleLoad);
-    }
-
-    // Cleanup listener
-    return () => {
-      window.removeEventListener('load', handleLoad);
-    };
-  });
-
-  // EFFECT 3
-  // Effect to react when loading is TRULY complete (data + window)
-  $effect(() => {
-    if (!browser) return;
-
-    const fullyLoaded = isFullyLoaded($loadingStore);
-
-    // Only react when it transitions to fully loaded
-    if (fullyLoaded && !internalFullyLoaded) {
-      console.log('Preloader reaction: Detected fully loaded state!');
-      internalFullyLoaded = true; // Mark locally to prevent re-triggering
-      progress = 100; // Jump progress bar to 100%
-
-      // Clear progress interval if it's somehow still running
-      if (progressIntervalId) {
-        console.log('Preloader reaction: Clearing progress interval (just in case).');
-        clearInterval(progressIntervalId);
-        progressIntervalId = null;
-      }
-
-      // Start the fade-out sequence
-      console.log('Preloader reaction: Starting fade-out sequence...');
-      const innerFadeOutTimer = setTimeout(() => {
-        console.log('Preloader reaction: Fading out inner content.');
-        showInnerContent = false;
-      }, FADE_OUT_DELAY_MS);
-
-      const containerFadeOutTimer = setTimeout(() => {
-        console.log('Preloader reaction: Fading out container.');
-        isFadingOutContainer = true;
-      }, FADE_OUT_DELAY_MS); // Start container fade at same time
-
-      const removalTimer = setTimeout(() => {
-        console.log('Preloader reaction: Removing component from DOM.');
-        isVisible = false;
-      }, FADE_OUT_DELAY_MS + CONTAINER_FADE_DURATION_MS + 50); // Delay + Container Fade + buffer
-
-      // --- IMPORTANT: Cleanup for these timers ---
-      // Since these timers are created *within* this effect,
-      // they need their own cleanup mechanism if the component
-      // were destroyed *during* the fade-out. Svelte's effect
-      // cleanup handles this automatically if the effect re-runs
-      // or the component is destroyed.
-      // You could store IDs and clear them in the main effect's
-          // cleanup, but Svelte's handling is generally sufficient here.
-      } else if (!fullyLoaded) {
-      // If navigation happens and store resets, reset internal state too
-      internalFullyLoaded = false;
-    }
+    return () => clearInterval(interval); // Cleanup on component destroy
   });
 
 </script>
 
-{#if isVisible} <!-- Only render preloader in browser -->
-  <div id="preloader-container"
-    class:opacity-0={isFadingOutContainer}
-    class="preloader-base bg-gray900 fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900 
-    transition-opacity ease-in-out duration-300"
-    aria-label="Loading page content"
-    role="status"
-    aria-busy="true" >
 
-    <!-- Progress Bar -->
-    <div class="preloader-progress-bar-bg"> <!-- Bar background -->
-      <div class="preloader-progress-bar bg-red-600"
-        style:width="{progress}%" >
-      </div>
-    </div>    
+<!-- 
+  Outermost container for the preloader.
+  - `fixed inset-0`: Covers the entire viewport.
+  - `bg-black/80`: Dark background with 80% opacity (Tailwind JIT feature). Adjust opacity (e.g., bg-black/90) if needed.
+  - `z-50`: Ensures it's on top of other content.
+  - `flex flex-col justify-center items-center`: Centers the content.
+  - `transition:fade`: Applies fade effect for the background entry (duration controlled here).
+  - `out:fade={{ duration: 300 }}`: Controls the fade-out when the preloader is removed.
+-->
+<div class="fixed inset-0 bg-black z-50 flex flex-col justify-center items-center"
+  in:fade={{ duration: 200 }} out:fade={{ duration: 400 }} >
+	<!-- 
+    Inner container for the animated elements (logo and text).
+    - `transition:fade` and `transition:scale`: Apply entrance animations.
+    - `delay`: Delays the appearance of these elements slightly after the background fades in.
+    - `duration`: Controls the speed of the entrance animations.
+    - `start`: Sets the initial scale for the scale transition.
+  -->
+  <div class="flex flex-col items-center justify-center"
+    in:scale={{ delay: 150, duration: 300, start: 0.8 }} >
+		<!-- SVG Logo -->
+    <div class="logo-loader animate-spin-slow">
+      <img src={Logo} alt="sebastiangonzalez.co" class="" />
+    </div>
 
-		<!-- Logo Wrapper (Constant Rotation + Fade/Scale) -->
-		<div id="rotating-logo-wrapper"
-			class="preloader-logo-wrapper mt-4 transition-all ease-out duration-500 animate-spin-slow"      
-      class:scale-100={showInnerContent}
-			class:opacity-100={showInnerContent}
-			class:scale-90={!showInnerContent}
-			class:opacity-0={!showInnerContent}	>   
-        
-      <div class="logo-loader">
+		<!-- Loading Text -->
+		<h1 class="text-xl md:text-2xl font-semibold text-gray-200 animate-flicker">
+			Loading{ellipsis}
+		</h1>
+	</div>
+</div>        
+      <!-- <div class="logo-loader">
         <img src={Logo} alt="sebastiangonzalez.co" class="" />
       </div>
-    </div> 
+    </div>  -->
 
-		<!-- Loading Text (Fade/Scale) -->
-		<p class="preloader-textmt-4 text-lg md:text-xl font-semibold text-gray-200 transition-all
-      ease-out duration-500 animate-pulse-subtle"
-      class:scale-100={showInnerContent}
-			class:opacity-100={showInnerContent}
-			class:scale-90={!showInnerContent}
-			class:opacity-0={!showInnerContent} >
-			Loading{ellipsis}
-		</p>
-
-  </div>
-{/if}
 
 
 <style lang="scss">
+	@keyframes spin-slow {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	.animate-spin-slow {
+		animation: spin-slow 6s linear infinite;
+	}
 
-  /* ****** ADDED CRITICAL BASE STYLES ****** */
-  .preloader-base {
-    position: fixed;
-    inset: 0;
-    z-index: 50; /* Or higher if needed */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* Background color is set by Tailwind bg-gray-900 */
-    /* Opacity transition is handled by Tailwind */
-  }
+	@keyframes flicker {
+		0%, 100% { opacity: 1; }
+    	50% { opacity: 0.6; }
+	}
+  	.animate-flicker {
+    	animation: flicker 1s infinite ease-in-out;
+ 	}
 
-  .preloader-progress-bar-bg {
-    position: fixed; /* Changed from absolute */
-    top: 0;
-    left: 0;
-    height: 4px; /* Tailwind h-1 */
-    width: 100%; /* Tailwind w-full */
-    background-color: #4b5563; /* Tailwind bg-gray-700 */
-    z-index: 51; /* Ensure it's above the main bg */
-  }
+	/* Using ::after pseudo-element to replace the span content */
+	.animate-dots::after {
+		content: '.'; /* Initial content */
+		animation: dots 1.5s steps(3, end) infinite; /* steps() creates the discrete typing effect */
+		display: inline-block; /* Needed for content and layout */
+		vertical-align: bottom; /* Align dots nicely */
+		overflow: hidden; /* Hide intermediate steps */
+		width: 1.2em; /* Adjust width to fit "..." */
+		text-align: left; /* Keep dots aligned left */
+	}
+	/* Hide the original span content if using ::after */
+	.animate-dots {
+		font-size: inherit; /* Ensure font size matches parent */
+		position: relative; /* Needed for pseudo-element positioning context if required */
+		color: transparent; /* Hide the original "..." text */
+	}
 
-  .preloader-progress-bar {
-    height: 100%; /* Fill parent height */
-    /* Background set by Tailwind bg-red-600 */
-    transition-property: width; /* Specific transition */
-    transition-timing-function: linear;
-    transition-duration: 300ms; /* Tailwind duration-300 */
-  }
+  
+	/* Animation for the "..." */
+	@keyframes dots {
+		0%, 20% { content: '.'; }
+		40%, 60% { content: '..'; }
+		80%, 100% { content: '...'; }
+	}
 
-  .preloader-logo-wrapper {
-    /* Centering handled by flex on parent */
-    /* Margin set by Tailwind mt-4 */
-    transform-origin: center; /* Crucial for rotation */
-  }
+	/* Ensure Tailwind base styles are applied if not using a global css file */
+	:global(:root) {
+		--tw-bg-opacity: 1; /* Example Tailwind CSS variable */
+	}
 
-  .preloader-text {
-    /* Margin set by Tailwind mt-4 */
-    /* Font size, weight, color by Tailwind */
-  }  
+
 
   /* Spin Animation */
   @keyframes spin {

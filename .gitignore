@@ -30,3 +30,6 @@ vite.config.ts.timestamp-*
 .txt
 
 How to use SCSS (Sass) with Svelte and media query mixins.txt
+
+/static/backups_components/
+

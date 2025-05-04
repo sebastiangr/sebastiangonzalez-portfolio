@@ -10,6 +10,6 @@
 
 <main class="container mx-auto p-4 pt-10"> <!-- Added padding-top -->
   <h1>My SvelteKit App</h1>
-  <p>Data from load: {JSON.stringify(data?.loadedData)}</p>
+  <!-- <p>Data from load: {JSON.stringify(data?.loadedData)}</p> -->
 </main>
 <!-- <Preloader /> -->

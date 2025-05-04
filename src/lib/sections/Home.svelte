@@ -1,7 +1,7 @@
 <script lang="ts">
   // This section is for displaying skills and technologies.
   // You can customize the skills and their styles as per your preference.
-  import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
+  
   import { isMenuOpen, toggleMenu } from '$lib/stores/menuStore';
   import { fade } from 'svelte/transition'; // Optional transition for elements
   import ArrowDown from "$lib/assets/arrow-down.svg";
