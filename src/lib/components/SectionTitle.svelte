@@ -3,95 +3,142 @@
   import { browser } from '$app/environment';
   import { gsap } from 'gsap';
 
+	// --- Constants for Glitch Effect ---
+	const GLITCH_DURATION = 1; // Total time for the effect (seconds)
+	const NUMBER_OF_CHANGES = 15; // How many random numbers to show
+	const INTERVAL = GLITCH_DURATION / NUMBER_OF_CHANGES; // Time between each number change
+
   // --- TYPEWRITER EFFECT --- //
-  let { 
-    number = "00", 
-    title = "Hello!", 
-    align = "centered", 
-    speedNumber = "1.0", 
-    speedTitle = "1.0" 
+	// --- Props & Types (assuming previous setup) ---
+	type AlignOptions = 'start' | 'centered' | 'end';
+	type Props = {
+		number?: string;
+		title?: string;
+		align?: AlignOptions;
+		speedNumber?: number | string;
+		speedTitle?: number | string;
+	}  
+	let {
+		number: initialNumberProp = '00', // Use prop for initial value
+		title = 'Default Title',
+		align = 'start',
+		speedNumber: rawSpeedNumber = 1.0,
+		speedTitle: rawSpeedTitle = 1.0
   } = $props();
 
+
+	const defaultSpeed = 1.0;
+	function parseAndValidateSpeed(value: number | string | undefined | null): number {
+		if (value === undefined || value === null) return defaultSpeed;
+		const parsed = parseFloat(value.toString());
+		return isNaN(parsed) ? defaultSpeed : parsed;
+	}
+	let finalSpeedNumber: number = $derived( parseAndValidateSpeed(rawSpeedNumber) );
+	let finalSpeedTitle: number = $derived( parseAndValidateSpeed(rawSpeedTitle) );
+
+	// --- Element Bindings ---
+	let numberElement = $state<HTMLSpanElement | null>(null);
+  let typewriterElement = $state<HTMLSpanElement | null>(null);
+
+	// --- GSAP Glitch Effect Logic using Timeline ---
+  let glitchTimeline = $state<gsap.core.Timeline | null>(null); // Store the active timeline
+  let originalNumberText = $state<string>('');
+
+  // Helper to format numbers (e.g., 7 -> "07", 12 -> "12")
+  function formatNumber(num: number): string {
+    return num.toString().padStart(2, '0');
+  }
+
+  // Function to set a random number
+  function setRandomNumber(element: HTMLSpanElement | null): void {
+    if (!element) return;
+    const randomNum = Math.floor(Math.random() * 100);
+    element.textContent = formatNumber(randomNum);
+  }
+
+  // Function to set the final target number
+  function setFinalNumber(element: HTMLSpanElement | null, finalNumText: string): void {
+    if (!element) return;
+    element.textContent = finalNumText;
+  }
 
   // --- TYPEWRITER EFFECT --- //
   // Text to be typed out by the typewriter effect  
   let textToWrite = title;
 
-  let typewriterElement: HTMLSpanElement | undefined;
   // Use InstanceType because TypewriterCore is the constructor (value),
   // and we need the type of objects it creates.
   let typewriterInstance: InstanceType<typeof TypewriterCore> | undefined;
 
-  let numberElement: HTMLElement | undefined = $state(); // Use $state for element binding in Svelte 5
-
-
   $effect(() => {
 
-    // --- GSAP HOVER ANIMATION --- //
     if (browser && numberElement) {
-			// Make sure numberElement isn't null before assigning listeners
-			const currentNumberElement = numberElement; // Create stable reference inside closure
+			const currentNumberElement = numberElement;
 
-			const moveDistance = 20;
-      const durationEnter = 0.6;
-      const durationLeave = 0.5;
+      originalNumberText = formatNumber(parseInt(initialNumberProp, 10) || 0);
+      if (currentNumberElement.textContent !== originalNumberText) {
+        currentNumberElement.textContent = originalNumberText;
+      }
 
-      // Type the event parameter as MouseEvent
-			const handleMouseEnter = (event: MouseEvent): void => {
-        // Kill any active leave animation immediately
-        gsap.killTweensOf(currentNumberElement);
+			const handleMouseEnter = (): void => {
+        // Kill existing timeline if any, and clear the reference
+        if (glitchTimeline) {
+          glitchTimeline.kill();
+          glitchTimeline = null;
+        }
 
-        const rect = currentNumberElement.getBoundingClientRect();
-        const elCenterX = rect.left + rect.width / 2;
-        const elCenterY = rect.top + rect.height / 2;
+        // Store the current text as original for this hover instance
+        originalNumberText = currentNumberElement.textContent || formatNumber(parseInt(initialNumberProp, 10) || 0);
+        const originalNum = parseInt(originalNumberText, 10);
+        if (isNaN(originalNum)) {
+          console.error("Could not parse original number:", originalNumberText);
+          return;
+        }
+        const targetNum = originalNum;
+        const targetNumText = formatNumber(targetNum);
 
-        const mouseX = event.clientX;
-        const mouseY = event.clientY;
+      // Create the timeline, initially paused
+        glitchTimeline = gsap.timeline({
+          paused: true,
+          onComplete: () => {
+            glitchTimeline = null; // Clear reference on completion
+          }
+        });
 
-        const deltaX = mouseX - elCenterX;
-        const deltaY = mouseY - elCenterY;
-        const angle = Math.atan2(deltaY, deltaX);
+        // Add calls to setRandomNumber at intervals
+        for (let i = 0; i < NUMBER_OF_CHANGES; i++) {
+          glitchTimeline.call(setRandomNumber, [currentNumberElement], i * INTERVAL);
+          // The time parameter places the call at that specific time in the timeline
+        }
 
-        const targetX = Math.cos(angle) * -moveDistance;
-        const targetY = Math.sin(angle) * -moveDistance;
+        // Add a final call to set the target number at the end of the duration
+        glitchTimeline.call(setFinalNumber, [currentNumberElement, targetNumText], GLITCH_DURATION);
 
-				gsap.to(currentNumberElement, {
-					x: targetX,
-					y: targetY,
-					duration: durationEnter,
-					ease: 'power2.out',
-					overwrite: true
-				});
-      };
+        // Play the timeline
+        glitchTimeline.play();
+			};
 
-			// No event parameter needed here
 			const handleMouseLeave = (): void => {
-				// Kill any active enter animation immediately
-        gsap.killTweensOf(currentNumberElement);
+				// Kill the timeline if it's running
+				if (glitchTimeline) {
+					glitchTimeline.kill();
+          glitchTimeline = null;
+				}
+				// Immediately revert to the original number
+				currentNumberElement.textContent = originalNumberText;
+			};
 
-				gsap.to(currentNumberElement, {
-					x: 0,
-					y: 0,
-					duration: durationLeave,
-					ease: 'elastic.out(1, 0.7)',
-          overwrite: true
-				});
-			};      
-
-      // Add event listeners
+			// Add event listeners
 			currentNumberElement.addEventListener('mouseenter', handleMouseEnter);
 			currentNumberElement.addEventListener('mouseleave', handleMouseLeave);
 
-            // --- Cleanup ---
-			// Return cleanup function
+			// --- Cleanup ---
 			// return () => {
-      //   // Check element still exists (though usually will if component is unmounting)
-      //   // No need for 'currentNumberElement' here, the original 'numberElement' scope works
-      //   if (numberElement) {
-      //     numberElement.removeEventListener('mouseenter', handleMouseEnter);
-      //     numberElement.removeEventListener('mouseleave', handleMouseLeave);
-      //     gsap.killTweensOf(numberElement);
-      //   }
+			// 	currentNumberElement.removeEventListener('mouseenter', handleMouseEnter);
+			// 	currentNumberElement.removeEventListener('mouseleave', handleMouseLeave);
+			// 	// Kill any active timeline when the component unmounts
+			// 	glitchTimeline?.kill();
+      //   glitchTimeline = null;
 			// };
 		}
 
@@ -150,17 +197,17 @@
       }
     }
 
-    return undefined; // Explicitly return undefined or void
+    // return undefined; // Explicitly return undefined or void
   });
 
 
 </script>
 
 <div class="title-wrapper {align}" >
-  <span class="title-number" data-speed="{speedNumber}" bind:this={numberElement}>
-    {number}
+  <span class="title-number" data-speed="{finalSpeedNumber}" bind:this={numberElement}>
+    { formatNumber(parseInt(initialNumberProp, 10) || 0) }
   </span>
-  <h1 class="title-text" data-speed="{speedTitle}">
+  <h1 class="title-text" data-speed="{finalSpeedTitle}">
     <span>&lt;</span> <span class="type" bind:this={typewriterElement}></span><span>&nbsp;/&gt;</span>
   </h1>
 </div>
@@ -217,6 +264,7 @@
     font-style: italic;
     font-weight: 500;
     color: var( --color-white); /* Example color */
+    pointer-events: none;
 
     span {
       color: var(--color-red); /* Example color */
