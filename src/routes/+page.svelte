@@ -134,7 +134,7 @@
   <!-- Hamburger Menu Button -->
 
   <!-- <Home /> -->
-  <!-- <section ><Home /></section> -->
+  <section ><Home /></section>
 
   <!-- Wrapper for the rest of the content -->
   <!--

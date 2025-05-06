@@ -19,6 +19,11 @@
   --main-font: 'JetBrains Mono', monospace;
 }
 
+::selection {
+  background-color: var(--color-red);
+  color: var(--color-white);
+}
+
 body {
   margin: 0; /* Eliminar margen */
   font-family: 'Sans Serif'; /* Establecer tipografía Sans Serif */
