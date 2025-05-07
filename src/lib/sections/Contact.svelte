@@ -1,4 +1,6 @@
 <script lang="ts">
+	import SectionTitle from "$lib/components/SectionTitle.svelte";
+
   // This section is for displaying skills and technologies.
   // You can customize the skills and their styles as per your preference.
   // Simple form submission handler (replace with actual logic if needed)
@@ -19,10 +21,12 @@
   };
 </script>
 
-<section id="" class="min-h-screen w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">
+<!-- <section id="" class="min-h-screen w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white"> -->
   <!-- TODO: Typewriter effect -->
-  <h2 class="text-4xl sm:text-6xl font-bold mb-10 sm:mb-16 text-center text-teal-400">Let's Talk</h2>
+  <!-- <h2 class="text-4xl sm:text-6xl font-bold mb-10 sm:mb-16 text-center text-teal-400">Let's Talk</h2> -->
+  <!-- <SectionTitle number="04" title="Let's Talk" align="centered" speedNumber={0.9} speedTitle={1.1}/> -->
 
+<div class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">  
   <!-- Contact Form -->
   <form on:submit={handleSubmit} class="w-full max-w-lg mb-16 space-y-6">
       <div>
@@ -77,4 +81,5 @@
            </a>
       </div>
   </div>
-</section>
+</div>
+<!-- </section> -->

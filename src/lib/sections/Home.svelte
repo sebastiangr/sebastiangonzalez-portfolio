@@ -75,7 +75,7 @@
 
 <section
   id="home"
-  class="{$isMenuOpen ? 'blurred' : ''} fixed inset-0 h-screen w-screen z-10 flex flex-col justify-between  text-white p-6 sm:p-10" >
+  class="{$isMenuOpen ? 'blurred' : ''} absolute inset-0 h-screen w-screen z-10 flex flex-col justify-between  text-white p-6 sm:p-10" >
 <!-- bg-gradient-to-br from-gray-800 via-gray-900 to-black -->
   <!-- Header Row -->
 

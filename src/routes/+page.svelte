@@ -12,74 +12,116 @@
   import { anchors, currentIndex } from "$lib/stores/navigationStore";
   import { onMount } from 'svelte';
   import { get } from 'svelte/store';
+	import SectionTitle from '$lib/components/SectionTitle.svelte';
+	import SectionT from '$lib/components/SectionT.svelte';
+	import { browser } from '$app/environment';
+  import { gsap } from 'gsap';
 
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { ScrollSmoother } from 'gsap/ScrollSmoother';
+  import { smootherStore } from '$lib/stores/scrollSmootherStore'; // Import our new store
+  // /**
+  // * @type {globalThis.ScrollSmoother}
+  // */
+	// let smoother; // Variable to hold the ScrollSmoother instance
+
+	let smoother: ScrollSmoother | null = null; // Variable to hold the ScrollSmoother instance
 
   $effect(() => {
 
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-      const anchorList = get(anchors);
+    if (browser) {  
+			// Register GSAP plugins
+			gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
-      if (window.scrollY === 0) {
-        currentIndex.set(0);
-        return;
-      }
+			// Create the ScrollSmoother instance
+			smoother = ScrollSmoother.create({
+				wrapper: '#smooth-wrapper', // Selector for the outer wrapper
+				content: '#smooth-content', // Selector for the inner content
+				smooth: 1, // How much smoothing (1 = default, higher = more smooth)
+				effects: true, // Look for data-speed and data-lag attributes for easy parallax
+                // normalizeScroll: true, // (Optional) Attempts to make scrolling consistent across devices/browsers
+                // ignoreMobileResize: true, // (Optional) Prevents ScrollTrigger refreshes on mobile viewport resize due to URL bar hiding
+				// smoothTouch: 0.1, // (Optional) Smoothing specifically for touch devices (0 = disabled)
+			}); 
+      
+			// If smoother was successfully created, update the store
+			if (smoother) {
+				smootherStore.set(smoother);
+			}
 
-      const index = anchorList.findIndex((anchor) => {
-        const section = document.querySelector(anchor);
-        if (section) {
-          const { top, height } = section.getBoundingClientRect();
-          const sectionTop = top + window.scrollY;
-          const sectionBottom = sectionTop + height;
+      // --- Your other GSAP animations related to page scroll can go here ---
+			// For example:
+			// gsap.utils.toArray<HTMLElement>('section[id]').forEach(section => { // Target sections with an ID
+			// 	gsap.fromTo(section,
+			// 		{ opacity: 0, y: 50 },
+			// 		{
+			// 			opacity: 1,
+			// 			y: 0,
+			// 			duration: 0.8,
+			// 			ease: 'power2.out',
+			// 			scrollTrigger: {
+			// 				trigger: section,
+			// 				start: 'top 85%', // Start animation when 85% of the section is visible
+			// 				toggleActions: 'play none none reverse', // Play on enter, reverse on leave
+			// 			}
+			// 		}
+			// 	);
+			// });
+			// --- End of other GSAP animations ---
 
-          return scrollPosition >= sectionTop && scrollPosition < sectionBottom;
-        }
-        return false;
-      });
+      // Return a cleanup function for when the component unmounts or $effect re-runs
+			return () => {
+				if (smoother) {
+					smoother.kill(); // Important: kill the ScrollSmoother instance to prevent memory leaks
+					smoother = null;  // Clear the local reference
+				}
+				smootherStore.set(null); // Reset the store
 
-      if (index !== -1) {
-        console.log(`Current index: ${index}`);
-        console.log(`Current anchor: ${anchorList[index]}`);
-        currentIndex.set(index);
-      }
-    };
+				// If you created other ScrollTriggers not directly managed by ScrollSmoother,
+				// you might want to clean them up too, e.g., by collecting them or using ScrollTrigger.killAll()
+				// However, ScrollSmoother.kill() usually cleans up ScrollTriggers it created.
+				// Use ScrollTrigger.killAll() with caution if other parts of your app use ScrollTrigger independently.
+			};
+		} else {
+			// If not in browser (e.g., SSR), ensure the store is null.
+			// This might also be a place to set a default non-functional smoother if needed for type consistency,
+			// but null is generally fine if components check for it.
+			smootherStore.set(null);
+			return () => {
+				smootherStore.set(null); // Cleanup for the non-browser case
+			};
+		}
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
   });
 
+  // $effect(() => {
 
-  // SVELTE 4 - WORKING PARTIALLY
-  // onMount(() => {
   //   const handleScroll = () => {
-  //     const scrollPosition = window.scrollY + window.innerHeight / 2; // Use the middle of the viewport as the reference point
+  //     const scrollPosition = window.scrollY + window.innerHeight / 2;
   //     const anchorList = get(anchors);
 
-  //     // Handle the case where the user scrolls to the very top of the page
   //     if (window.scrollY === 0) {
-  //       currentIndex.set(0); // Set index to 0 for the "Home" section
+  //       currentIndex.set(0);
   //       return;
   //     }
 
-  //     // Find the index of the section currently in view
   //     const index = anchorList.findIndex((anchor) => {
   //       const section = document.querySelector(anchor);
   //       if (section) {
   //         const { top, height } = section.getBoundingClientRect();
-  //         const sectionTop = top + window.scrollY; // Absolute position of the section's top
+  //         const sectionTop = top + window.scrollY;
   //         const sectionBottom = sectionTop + height;
 
-  //         // Check if the scroll position is within the section's bounds
   //         return scrollPosition >= sectionTop && scrollPosition < sectionBottom;
   //       }
   //       return false;
   //     });
 
   //     if (index !== -1) {
-  //       // Update the current index
-  //       console.log(`Current index: ${index}`);
-  //       console.log(`Current anchor: ${anchorList[index]}`);
-  //       currentIndex.set(index); // Update the global current index
+  //       // console.log(`Current index: ${index}`);
+  //       // console.log(`Current anchor: ${anchorList[index]}`);
+  //       currentIndex.set(index);
   //     }
   //   };
 
@@ -87,83 +129,109 @@
   //   return () => window.removeEventListener("scroll", handleScroll);
   // });
 
-
-
-
-
-
-  // onMount(() => {
-  //   const handleScroll = () => {
-  //     const scrollPosition = window.scrollY + window.innerHeight / 2;
-
-  //     console.log(`Scroll position: ${scrollPosition}`);
-
-  //     // Update the current index based on the scroll position
-  //     const anchorList = get(anchors);
-  //     const index = anchorList.findIndex((anchor) => {
-  //       const section = document.querySelector(anchor);
-  //       if (section) {
-  //         const { top, bottom } = section.getBoundingClientRect();
-  //         return top <= scrollPosition && bottom > scrollPosition;
-  //       }
-  //       return false;
-  //     });
-
-  //     if (index !== -1) {
-  //       console.log(`Current index: ${index}`);
-  //       console.log(`Current anchor: ${anchorList[index]}`);
-  //       currentIndex.set(index); // Update the global current index
-  //     }
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // });
   
 </script>
 
-<svelte:head>
-	<title>sebastiangonzalez.co - Portfolio</title>
-	<meta name="description" content="Freelance fullstack and app developer." />
-  <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
-</svelte:head>
+<FullScreenMenu />
 
-<!-- <main class="page-content" class:blurred={isMenuOpen}> -->
-<main class="overflow-hidden">
-	<!-- The Home section is fixed and covers the screen initially (z-10) -->
-  <!-- Hamburger Menu Button -->
+<div id="smooth-wrapper" class="antialiased">
+  <main id="smooth-content" class=""> 
 
-  <!-- <Home /> -->
-  <section ><Home /></section>
+    <div class="home-container" style="min-height: 100vh">
+      <Home />
+    </div>
 
-  <!-- Wrapper for the rest of the content -->
-  <!--
-        - relative: Establishes stacking context for z-index
-        - z-20: Ensures this scrolls OVER the Home section (z-10)
-        - mt-[100vh]: *** THIS IS THE KEY FIX ***
-          Pushes this entire block down by the height of the viewport,
-          so it visually starts AFTER the Home section.
-        - bg-white:  Needed so this block's background obscures Home as it scrolls up.
-                    Adjust if your first scrollable section (AboutMe) has a different
-                    background you want shown immediately.
-    -->
-  <!-- <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative z-20 mt-[100vh]"> > -->
-  <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative">
-    <!-- <AboutMe />
-    <Portfolio />
-    <Skills />
-    <Contact /> -->
-    <section id="about-me"><AboutMe /></section>
-    <section id="portfolio"><Portfolio /></section>
-    <section id="skills"><Skills /></section>
-    <section id="contact"><Contact /></section>
-  </div>
+    <div class="main-container {$isMenuOpen ? 'blurred' : ''} relative  ">
 
-  <Navigation />
+      <!-- <section id="about-me"><AboutMe /></section>
+      <section id="portfolio"><Portfolio /></section>
+      <section id="skills"><Skills /></section>
+      <section id="contact"><Contact /></section> -->
+  
+      <section id="about-me" >
+        <div class="flex justify-center items-center mb-10" >
+          <SectionT number="01" title="About Me" align="centered" speedNumber={0.85} speedTitle={0.92} />
+        </div> 
 
-	<!-- The Full Screen Menu (conditionally rendered via store) -->
-	<FullScreenMenu />
-</main>
+        <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </section>
+
+
+      <section id="portfolio" >
+        <div class="flex justify-center items-center mb-10" >
+          <SectionT number="02" title="Portfolio" align="start" speedNumber={0.95} speedTitle={0.9} />
+        </div> 
+
+        <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+        
+        <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </section>
+
+      
+      <section id="skills" >
+        <div class="flex justify-center items-center mb-10" >
+          <SectionT number="03" title="Skills" align="end" speedNumber={0.9} speedTitle={0.95} />
+        </div> 
+
+        <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+
+        <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </section>
+
+
+      <section id="contact" >
+        <div class="flex justify-center items-center mb-10" >
+          <SectionT number="04" title="Contact" align="centered" speedNumber={0.95} speedTitle={0.9} />
+        </div> 
+
+        <Contact />
+
+        <!-- <p class="text-lg text-gray-600 my-6">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p> -->
+      </section>    
+      
+    </div>
+
+
+
+  </main>
+</div>
+
 
 
 <style>
@@ -172,6 +240,36 @@
     /* scroll-snap-align: start;
     min-height: 100vh; */
   }
+
+  
+	/*
+	The wrapper needs to be fixed or absolute to cover the viewport
+  and hide the native scrollbar.
+  Adjust top/left/right/bottom as needed if you have fixed headers/footers
+  *outside* the #smooth-wrapper.
+  */
+  #smooth-wrapper {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		overflow: hidden; /* Crucial: Hides the native scrollbar */
+    /* background: lightcoral; */ /* DEBUG: temporary background */
+	}
+
+  /*
+  The content needs to allow scrolling. GSAP calculates its height
+  and applies transforms to the wrapper for the smooth effect.
+  */
+	#smooth-content {
+		/* width: 100%; */ /* Usually defaults to 100% */
+		overflow: visible; /* Allows content to overflow and be scrollable */
+    /* background: lightblue; */ /* DEBUG: temporary background */
+    /* Add some height to test scrolling */
+    /* min-height: 100vh; */ /* Ensure it can at least fill the viewport */
+	}
+
 
   .main-container {
     background-color: var(--color-black, #121212);

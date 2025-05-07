@@ -1,17 +1,45 @@
 <script>
 	import Preloader from '$lib/components/Preloader.svelte';
   import { browser } from '$app/environment';
+  import { gsap } from 'gsap';
   import '../app.scss';
   
+  	// --- IMPORTANT ---
+	// Adjust the import path based on how you installed/obtained ScrollSmoother
+	// If installed via npm (Club GreenSock private repo or included):
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { ScrollSmoother } from 'gsap/ScrollSmoother';
+	import FullScreenMenu from '$lib/components/FullScreenMenu.svelte';
+
 	// State: Is the page fully loaded (including assets)? Start false.
 	// This ensures the server renders without the main content initially.
 	let isPageReady = $state(false);
 
+  /**
+  * @type {globalThis.ScrollSmoother}
+  */
+	let smoother; // Variable to hold the ScrollSmoother instance
 
   // Effect: Runs only on the client to listen for the 'load' event
 	$effect(() => {
 		// Only run this logic in the browser environment
-		if (browser) {
+		if (browser) {   
+
+			// Register GSAP plugins
+			// gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+      gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+			// // Create the ScrollSmoother instance
+			// smoother = ScrollSmoother.create({
+			// 	wrapper: '#smooth-wrapper', // Selector for the outer wrapper
+			// 	content: '#smooth-content', // Selector for the inner content
+			// 	smooth: 1, // How much smoothing (1 = default, higher = more smooth)
+			// 	effects: true, // Look for data-speed and data-lag attributes for easy parallax
+      //           // normalizeScroll: true, // (Optional) Attempts to make scrolling consistent across devices/browsers
+      //           // ignoreMobileResize: true, // (Optional) Prevents ScrollTrigger refreshes on mobile viewport resize due to URL bar hiding
+			// 	// smoothTouch: 0.1, // (Optional) Smoothing specifically for touch devices (0 = disabled)
+			// });      
+
 			const markPageAsReady = () => {
 				console.log("window.onload event fired!"); // Debug log
 				isPageReady = true;
@@ -28,89 +56,39 @@
 				window.addEventListener('load', markPageAsReady, { once: true });
 			}
 
-			// With { once: true }, explicit cleanup is less critical, but good practice:
-			// return () => {
-			//  if (BROWSER) { // Check BROWSER again in cleanup
-			//      window.removeEventListener('load', markPageAsReady);
-			//  }
-			// };
 		}
-	}); // This effect structure effectively runs once on mount
-
+	}); 
 
 </script>
 
-<!-- /* Apply base font smoothing */ -->
-<div class="antialiased">
 
-  <!-- Preloader Section -->
-  <!-- This will be rendered initially by the server -->
-  <!-- It will be removed by the #if block when isPageReady becomes true -->
-  {#if !isPageReady}
-    <Preloader />
-  {/if}
+<!-- Preloader Section -->
+{#if !isPageReady}
+  <Preloader />
+{/if}
 
+{#if isPageReady}
+  {#key isPageReady}
+    <div class="content-fade-in">
+      <slot />
+    </div>
+  {/key}
+{/if}
 
-  <!-- Main Content Section -->
-  <!-- This <slot/> content is NOT rendered by the server initially -->
-  <!-- It's only rendered when isPageReady becomes true -->
-  {#if isPageReady}
-    <!-- Use #key block to ensure fade-in animation runs when content appears -->
-    {#key isPageReady}
-      <div class="content-fade-in">
-        <slot />
-      </div>
-    {/key}
-  {/if}
+<!-- {#if isPageReady}
 
-</div>
+{/if} -->
+
 
 <style>
-  /* Optional: Add a subtle fade-in for the main content after preloader disappears */
+
 	@keyframes fadeIn {
 		from { opacity: 0; }
 		to { opacity: 1; }
 	}
 
 	.fade-in-content {
-		/* Only apply animation *after* navigation is complete */
 		animation: fadeIn 0.5s ease-in forwards;
 	}
 
-	/* Ensure layout takes full height if needed */
-	/* :global(body), :global(html), :global(#svelte) { height: 100%; } */
-	/* div { width: 100%; } */
 </style>
-
-
-
-<!-- ___OLD___ REVIEW AND DELETE -->
-<!-- <script>
-  import { onMount } from 'svelte';
-  import '../app.css';
-
-  import { dev } from '$app/environment';
-  import { injectAnalytics } from '@vercel/analytics/sveltekit';
- 
-  injectAnalytics({ mode: dev ? 'development' : 'production' });
-</script> -->
-
-<!-- <div class="bg-black text-white flex justify-center gap-4 p-4 fixed top-0 left-0 right-0 font-sans">
-  <a href="/" class="text-white no-underline">Home</a>
-  <a href="/portfolio" class="text-white no-underline">Portfolio</a>
-  <a href="/contacto" class="text-white no-underline">Contacto</a>
-</div> -->
-
-<!-- <div class="body-bg flex items-center justify-center min-h-screen">
-  <slot />
-</div>
-
-
-<style>
-  .body-bg  {
-    /* background: linear-gradient(to bottom, #0f0f0f 0%, #2d2d2d 100%), linear-gradient(to top, rgb(15, 15, 15) 0%, rgba(204, 185, 185, 0.25) 100%); */
-    background: linear-gradient(to bottom, #2d2d2d 0%, rgb(19, 19, 19) 100%);
-    
-    background-blend-mode: multiply;  
-  }  
-</style> -->

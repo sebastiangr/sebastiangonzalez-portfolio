@@ -1,7 +1,12 @@
+<script>
+	import SectionTitle from "$lib/components/SectionTitle.svelte";
+
+</script>
 <!-- src/lib/sections/Portfolio.svelte -->
 <section id="" class="w-full flex flex-col items-center justify-center py-16 px-6 sm:px-10 text-white">
   <!-- TODO: Typewriter effect -->
-  <h2 class="text-4xl sm:text-5xl font-bold mb-10 sm:mb-16 text-center">Portfolio</h2>
+  <!-- <h2 class="text-4xl sm:text-5xl font-bold mb-10 sm:mb-16 text-center">Portfolio</h2> -->
+  <SectionTitle number="02" title="Portfolio" align="start" speedNumber={1.05} speedTitle={0.95}/>
 
   <!-- Simple Horizontal Scroll Container for Carousel -->
   <div class="w-full max-w-6xl overflow-x-auto pb-8">

@@ -2,6 +2,8 @@
 	import TypewriterCore from "typewriter-effect/dist/core.js";
   import { browser } from '$app/environment';
   import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+	import { ScrollSmoother } from 'gsap/ScrollSmoother';
 
 	// --- Constants for Glitch Effect ---
 	const GLITCH_DURATION = 1; // Total time for the effect (seconds)
@@ -124,6 +126,9 @@
     currentNumberElement.textContent = originalNumberText;
   };    
 
+  // FIX
+  let hasPlayedAnimation = false;
+
   $effect(() => {
     if (!browser || !wrapperElement) {
       return; // Wait for browser and wrapper element
@@ -132,6 +137,9 @@
 
     // --- Initialize Scroll-Reveal Animation ---
     gsap.set(currentWrapperElement, { opacity: 0, y: 30 });
+    // gsap.registerPlugin(ScrollTrigger);
+    // Ensure ScrollTrigger is registered before using it
+    gsap.registerPlugin(ScrollTrigger, ScrollSmoother); // Uncomment if using ScrollSmoother
 
     scrollRevealAnimation = gsap.to(currentWrapperElement, {
       opacity: 1,
@@ -145,52 +153,55 @@
         once: true,
         // markers: true,
         onEnter: () => {
-          console.log('ScrollTrigger onEnter: Playing reveal animation and starting typewriter.');
-          scrollRevealAnimation?.play();
+          if (!hasPlayedAnimation) {
+            console.log('ScrollTrigger onEnter: Playing reveal animation and starting typewriter.');
+            scrollRevealAnimation?.play();
+            hasPlayedAnimation = true;
 
-          // --- Start Typewriter on Scroll Reveal ---
-          // Check if typewriter element exists and core is loaded
-          if (typewriterElement && typeof TypewriterCore === 'function' && !hasTypewriterStarted) {
-            try {
-              // Ensure existing instance is stopped if any (though `once: true` should prevent re-trigger)
-              if (typewriterInstance && typeof typewriterInstance.stop === 'function') {
-                typewriterInstance.stop();
-              }
-
-              typewriterInstance = new TypewriterCore(typewriterElement, {
-                autoStart: false, // We will start it manually
-                loop: false,
-                delay: 75,
-                wrapperClassName: 'Typewriter__wrapper',
-                cursorClassName: 'Typewriter__cursor',
-                // Remove callback from here if it causes issues with manual start
-              });
-
-              typewriterInstance
-                .pauseFor(100) // Short pause after reveal
-                .typeString(textToWrite)
-                .start()
-                .callFunction(() => { // Use callFunction for post-typing actions
-                  console.log('Typewriter finished writing!');
-                    // Optionally remove cursor after typing
-                  if (typewriterElement?.querySelector('.Typewriter__cursor')) {
-                    (typewriterElement.querySelector('.Typewriter__cursor') as HTMLElement).style.display = 'none';
-                  }
+            // --- Start Typewriter on Scroll Reveal ---
+            // Check if typewriter element exists and core is loaded
+            if (typewriterElement && typeof TypewriterCore === 'function' && !hasTypewriterStarted) {
+              try {
+                // Ensure existing instance is stopped if any (though `once: true` should prevent re-trigger)
+                if (typewriterInstance && typeof typewriterInstance.stop === 'function') {
+                  typewriterInstance.stop();
                 }
-              );
 
-              hasTypewriterStarted = true; // Mark as started
-              console.log('✅ Typewriter started on scroll reveal.');
+                typewriterInstance = new TypewriterCore(typewriterElement, {
+                  autoStart: false, // We will start it manually
+                  loop: false,
+                  delay: 75,
+                  wrapperClassName: 'Typewriter__wrapper',
+                  cursorClassName: 'Typewriter__cursor',
+                  // Remove callback from here if it causes issues with manual start
+                });
 
-            } catch (error) {
-              console.error('❌ Error during Typewriter initialization on scroll reveal:', error);
+                typewriterInstance
+                  .pauseFor(100) // Short pause after reveal
+                  .typeString(textToWrite)
+                  .start()
+                  .callFunction(() => { // Use callFunction for post-typing actions
+                    console.log('Typewriter finished writing!');
+                      // Optionally remove cursor after typing
+                    if (typewriterElement?.querySelector('.Typewriter__cursor')) {
+                      (typewriterElement.querySelector('.Typewriter__cursor') as HTMLElement).style.display = 'none';
+                    }
+                  }
+                );
+
+                hasTypewriterStarted = true; // Mark as started
+                console.log('✅ Typewriter started on scroll reveal.');
+
+              } catch (error) {
+                console.error('❌ Error during Typewriter initialization on scroll reveal:', error);
+              }
+            } else if (!typewriterElement) {
+              console.warn('Typewriter element not found when ScrollTrigger.onEnter fired.');
+            } else if (hasTypewriterStarted) {
+              console.log('Typewriter already started, skipping.');
             }
-          } else if (!typewriterElement) {
-            console.warn('Typewriter element not found when ScrollTrigger.onEnter fired.');
-          } else if (hasTypewriterStarted) {
-            console.log('Typewriter already started, skipping.');
-          }
-        },
+          };
+        }
       }
     });
 

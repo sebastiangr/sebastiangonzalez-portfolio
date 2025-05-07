@@ -82,6 +82,7 @@
 	<div id="smooth-content">
 		<!-- The rest of your app's content goes here -->
 		<slot />
+    
 	</div>
 </div>
 

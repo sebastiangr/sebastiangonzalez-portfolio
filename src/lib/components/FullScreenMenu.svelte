@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { isMenuOpen, closeMenu, toggleMenu } from '$lib/stores/menuStore';
 	import { fade, slide } from 'svelte/transition';
+  import { get } from 'svelte/store';
   import Logo from "$lib/assets/sebastiangonzalez.co-logo.svg";
+	import { anchors } from '$lib/stores/navigationStore';
   // import Logo from "/images/sebastiangonzalez.co-logo.svg";
+
+  import { smootherStore } from '$lib/stores/scrollSmootherStore';
 
 	// List of navigation items
 	const navItems = [
@@ -13,10 +17,39 @@
 		{ href: '#contact', label: 'Contact' }
 	];
 
-	// Close menu when a link is clicked
-	function handleLinkClick() {
-		closeMenu();
-	}
+  // Close menu when a link is clicked
+  // function handleLinkClick(event: MouseEvent) {
+  //   const target = event.target as HTMLAnchorElement;
+  //   const href = target?.getAttribute('href');
+  //   const anchorList = get(anchors); // Get the value of the anchors store
+  //   const index = anchorList.findIndex((anchor: string | null) => anchor === href);
+  //   if (index !== -1) {
+  //     window.scrollTo({ top: index, behavior: 'smooth' });
+  //   }
+  //   closeMenu();
+  // }
+
+  // ... inside handleLinkClick function ...
+  function handleLinkClick(event: MouseEvent) {
+    event.preventDefault(); // Prevent default anchor jump
+    const anchorElement = event.currentTarget as HTMLAnchorElement;
+    const href = anchorElement?.getAttribute('href');
+    const smoother = get(smootherStore); // Get the smoother instance
+
+    if (href && smoother) {
+      smoother.scrollTo(href, true, "top");
+      // The object syntax {smooth: true, position: "top"} is also valid for the second arg.
+      // You can also specify duration: smoother.scrollTo(href, {smooth: 1.5, position: "top"});
+    } else if (href) {
+      // Fallback if smoother isn't ready (less likely with proper store initialization)
+      const element = document.querySelector(href);
+      element?.scrollIntoView({ behavior: 'smooth' });
+      console.warn("ScrollSmoother instance not found or href missing. Using native scrollIntoView if element exists.");
+    }
+
+    closeMenu();
+  }
+
 </script>
 
 <!-- MENU OVERLAY -->
@@ -61,7 +94,7 @@
 <style>
 
   #menu-overlay {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.6);
   }
 
   ul.menu-items {
