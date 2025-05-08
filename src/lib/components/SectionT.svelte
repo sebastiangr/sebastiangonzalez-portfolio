@@ -1,9 +1,11 @@
 <script lang="ts">
-	import TypewriterCore from "typewriter-effect/dist/core.js";
+  import TypewriterCore from "typewriter-effect/dist/core.js";
   import { browser } from '$app/environment';
   import { gsap } from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
-	import { ScrollSmoother } from 'gsap/ScrollSmoother';
+	import { ScrollSmoother } from 'gsap/ScrollSmoother';  
+
+
 
 	// --- Constants for Glitch Effect ---
 	const GLITCH_DURATION = 1; // Total time for the effect (seconds)
@@ -270,15 +272,18 @@
   </h1>
 </div>
 
-<style lang="scss">
+<style lang="postcss">
+
   .title-wrapper {
     display: flex;
     align-items: center;
-    // gap: 1rem;
+    /* gap: 1rem; */
     font-variant-ligatures: none;
     margin-bottom: 20px;
     margin-top: 20px;    
-    height: 200px;
+    padding-left: 6rem;
+    padding-right: 6rem;
+    height: 22rem;
     -webkit-user-select: none; /* Safari */        
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* IE10+/Edge */
@@ -306,30 +311,56 @@
         padding-right: 85px;
       }
     }
+    
+    @media screen and (max-width: 64rem) {
+      height: 10rem;
+      margin-bottom: 10px;
+      margin-top: 10px;        
+      padding-left: 3rem;
+      padding-right: 3rem;  
+    }
+    @media screen and (max-width: 48rem) {
+       
+      padding-left: 2rem;
+      padding-right: 2rem;  
+    }    
+    @media screen and (max-width: 40rem) {
+     
+      padding-left: 1rem;
+      padding-right: 1rem;  
+    }        
   }
   span.title-number {
     position: absolute;
     font-family: var( --main-font), sans-serif;    
-    font-size: 12rem;
+    font-size: 20rem;
     font-weight: bold;
     -webkit-text-stroke: 2px var(--color-red);
     color: transparent;
     opacity: 0.5;  
-  }
-  span.title-number::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    -webkit-text-stroke: 0;
-    pointer-events: none;
+    transition: font-size 0.3s ease-in-out;  
+
+    @media screen and (max-width: 80rem) {
+      font-size: 16rem;        
+    }
+    @media screen and (max-width: 64rem) {
+      font-size: 12rem;        
+    }
+    @media screen and (max-width: 48rem) {
+      font-size: 10rem;        
+    }  
+    @media screen and (max-width: 40rem) {
+      font-size: 8rem;        
+    }       
   }
   h1.title-text {
     position: relative;
-    font-size: 2.5rem;
+    font-size: 5rem;
     font-style: italic;
     font-weight: 500;
     color: var( --color-white); /* Example color */
     pointer-events: none;
+    transition: font-size 0.3s ease-in-out;
 
     span {
       color: var(--color-red); /* Example color */
@@ -338,5 +369,18 @@
         color: 1px var(--color-white);
       }
     }
+
+    @media screen and (max-width: 80rem) {
+      font-size: 4rem;        
+    }
+    @media screen and (max-width: 64rem) {
+      font-size: 3rem;        
+    }
+    @media screen and (max-width: 48rem) {
+      font-size: 2.5rem;        
+    }
+    @media screen and (max-width: 40rem) {
+      font-size: 2rem;        
+    }    
   }
 </style>

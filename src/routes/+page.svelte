@@ -149,7 +149,7 @@
       <section id="contact"><Contact /></section> -->
   
       <section id="about-me" >
-        <div class="flex justify-center items-center mb-10" >
+        <div class="w-full mb-10" >
           <SectionT number="01" title="About Me" align="centered" speedNumber={0.85} speedTitle={0.92} />
         </div> 
 
@@ -174,9 +174,11 @@
 
 
       <section id="portfolio" >
-        <div class="flex justify-center items-center mb-10" >
+        <div class="w-full mb-10" >
           <SectionT number="02" title="Portfolio" align="start" speedNumber={0.95} speedTitle={0.9} />
         </div> 
+
+        <Portfolio />        
 
         <p class="text-lg text-gray-600 my-6">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -193,7 +195,7 @@
 
       
       <section id="skills" >
-        <div class="flex justify-center items-center mb-10" >
+        <div class="w-full mb-10 item  " >
           <SectionT number="03" title="Skills" align="end" speedNumber={0.9} speedTitle={0.95} />
         </div> 
 
@@ -212,7 +214,7 @@
 
 
       <section id="contact" >
-        <div class="flex justify-center items-center mb-10" >
+        <div class="w-full mb-10" >
           <SectionT number="04" title="Contact" align="centered" speedNumber={0.95} speedTitle={0.9} />
         </div> 
 
