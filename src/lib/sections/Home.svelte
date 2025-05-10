@@ -75,37 +75,91 @@
 
 <section
   id="home"
-  class="{$isMenuOpen ? 'blurred' : ''} absolute inset-0 h-screen w-screen z-10 flex flex-col justify-between  text-white p-6 sm:p-10" >
-<!-- bg-gradient-to-br from-gray-800 via-gray-900 to-black -->
-  <!-- Header Row -->
+  class="{$isMenuOpen ? 'blurred' : ''} absolute inset-0 h-screen w-screen z-10 flex flex-col justify-between" >
 
-  <!-- Optional: Centered content like Name/Title -->
-  <div transition:fade class="flex flex-col items-center justify-center text-center flex-grow -mt-16">
-
-    <h2 class="text-2xl sm:text-4xl mb-4">Hi!</h2>
-    
-    <h2 class="text 2xl sm:text-4xl mb-4">I am a <span bind:this={typewriterElement}></span></h2>
-
-    
-    <!-- <div id="typewriter"></div>
-
-    
-    <h1 class="typed">Este texto se mecanografiará</h1>
-    <h1 class="typed-text text-5xl md:text-7xl font-bold mb-4 animate-fade-in-up"></h1>
-    <h1 class="text-5xl md:text-7xl font-bold mb-4 animate-fade-in-up">
-      I'm a <span class="profile-text"></span>
-    </h1> -->
-    <!-- Add maybe a subtle down arrow hint -->
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">      
-      <img src="{ArrowDown}" alt=" Arrow Down" class="h-10 w-auto"/>
-    </div>
+  <div class="home-gradient-wrapper">
+    <div class="home-gradient"></div>
   </div>
-   <!-- <div />  -->
-   <!-- Dummy div to help justify-between -->
+
+  <div transition:fade class="home-wrapper flex flex-col text-left flex-grow -mt-16">
+
+    <h2 class="text 2xl sm:text-6xl mb-4"><span bind:this={typewriterElement}></span></h2>
+    <h1 class="home-text-title">SEBASTIÁN GONZÁLEZ</h1>
+    <span class="home-text-description">
+      Full-Stack Developer and Graphic Designer with 14+ years of experience. I combine strong technical knowledge with a background in graphic design,
+      allowing me to <i>create functional</i> and aesthetically pleasing interfaces from conception to deployment.
+    </span>
+
+    <!-- Add maybe a subtle down arrow hint -->
+    <!-- <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">      
+      <img src="{ArrowDown}" alt=" Arrow Down" class="h-10 w-auto"/>
+    </div> -->
+  </div>
 </section>
 
 <!-- Basic Animation Styles (Add to app.css or a global style block) -->
 <style lang="scss">
+
+
+  #home {
+    /* background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #1C1C1C 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
+    background-blend-mode: multiply; */
+    // background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
+    // background-blend-mode: multiply,multiply;
+    background-image: url('/background/bg-block_02.jpg');
+    background-position: center top;
+    background-size: cover;
+  }
+  .home-wrapper {
+    position: absolute;
+    z-index: 99;
+    left: 10%;
+    bottom: 20%;   
+  }
+  .home-gradient-wrapper {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column;
+    justify-content: end;    
+  }
+  .home-gradient {
+    background: linear-gradient(180deg, rgba(18, 18, 18, 0) 0%, rgba(18, 18, 18, 0) 20%, rgba(18, 18, 18, 0.7) 50%, rgb(18, 18, 18,1) 80%, rgb(18, 18, 18,1) 100%);
+    background-position-x: 0%;
+    background-position-y: 0%;
+    background-position-x: 0%;
+    background-position-y: 0%;
+    height: 180px;
+    position: relative;
+    top: 0;
+    left: 0;
+    background-position: center center;
+    z-index: 20;
+    width: 100%;
+  }
+
+  h1.home-text-title {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--color-red);
+    // text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
+    line-height: 1.2;
+    animation: fadeInUp 1s ease-out forwards;
+    opacity: 0; /* Start hidden */
+  }
+
+  span.home-text-description {
+    width: 60%;
+    font-family: var(--main-font);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--color-white);
+    line-height: 1.5;
+    margin-top: 1rem;
+    animation: fadeInUp 1s ease-out forwards;
+    opacity: 0; /* Start hidden */
+  }
+
 
   /* Your styles */
   /* Make sure cursor is visible */
@@ -158,10 +212,5 @@
     animation: bounce 2s infinite;
   }
 
-  #home {
-    /* background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #1C1C1C 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
-    background-blend-mode: multiply; */
-    background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
-    background-blend-mode: multiply,multiply;
-  }
+
 </style>

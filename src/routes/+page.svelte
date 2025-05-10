@@ -238,9 +238,18 @@
 
 <style>
 
+  main {
+    background-color: var(--color-black, #121212);
+  }
+
   section {
     /* scroll-snap-align: start;
     min-height: 100vh; */
+  }
+
+  #about-me {
+    margin-top: 80px;
+
   }
 
   
