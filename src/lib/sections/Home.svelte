@@ -1,16 +1,13 @@
 <script lang="ts">
-  // This section is for displaying skills and technologies.
-  // You can customize the skills and their styles as per your preference.
-  
   import { isMenuOpen, toggleMenu } from '$lib/stores/menuStore';
-  import { fade } from 'svelte/transition'; // Optional transition for elements
+  import { fade } from 'svelte/transition';
   import ArrowDown from "$lib/assets/arrow-down.svg";
+  import { gsap } from 'gsap'; // <-- Import GSAP
 
   import TypewriterCore from 'typewriter-effect/dist/core.js';
 
 
-  console.log('>>> Log Imported Core:', TypewriterCore); // Verify: Should be the class constructor
-
+  console.log('>>> Log Imported Core:', TypewriterCore);
   let typewriterElement: HTMLSpanElement | undefined;
 
   // Use InstanceType because TypewriterCore is the constructor (value),
@@ -71,11 +68,225 @@
     };
   });
 
+  // Effect for GSAP Parallax
+  $effect(() => {
+    console.log('Parallax effect: Initializing.');
+
+    const homeSectionEl: HTMLElement | null = document.getElementById('home');
+    const h2TextEl: HTMLElement | null = document.querySelector('.home-wrapper h2.text');
+    const h1TitleEl: HTMLElement | null = document.querySelector('.home-wrapper h1.home-text-title');
+    const spanDescriptionEl: HTMLElement | null = document.querySelector('.home-wrapper span.home-text-description');
+
+    const bgImageEl: HTMLElement | null = document.querySelector('.background-image');
+    const bgOverlay: HTMLElement | null = document.querySelector('.background-overlay');
+    const bgOverlay2: HTMLElement | null = document.querySelector('.background-overlay2');
+    if (!bgImageEl) {
+      console.error("❌ Parallax: Background image element not found. Effect disabled.");
+      return;
+    }
+
+    // --- Element Checks ---
+    // if (!homeSectionEl) {
+    //   console.error("❌ Parallax: #home element not found. Effect disabled.");
+    //   return; // Critical element missing
+    // }
+    // console.log('✅ Parallax: #home found.');
+
+    // Log status of other elements
+    if (h2TextEl) console.log('✅ Parallax: h2.text found.');
+    else console.warn("⚠️ Parallax: .home-wrapper h2.text NOT found. Its parallax will be skipped.");
+
+    if (h1TitleEl) console.log('✅ Parallax: h1.home-text-title found.');
+    else console.warn("⚠️ Parallax: .home-wrapper h1.home-text-title NOT found. Its parallax will be skipped.");
+
+    if (spanDescriptionEl) console.log('✅ Parallax: span.home-text-description found.');
+    else console.warn("⚠️ Parallax: .home-wrapper span.home-text-description NOT found. Its parallax will be skipped.");
+
+    // Initial background position from CSS for #home is 'center top' (50% 0%)
+    const initialBgX = "50%";
+    const initialBgY = "0%";
+
+
+    const executeParallax = (event: MouseEvent) => {
+      const { clientX, clientY } = event;
+      const { innerWidth, innerHeight } = window; // Using viewport as the reference container
+
+      // Normalize mouse position relative to viewport center. Output range: -0.5 to 0.5
+      const normalizedX = (clientX - innerWidth / 2) / innerWidth;
+      const normalizedY = (clientY - innerHeight / 2) / innerHeight;
+
+      // --- Define movement factors (total pixel travel distance for an element) ---
+      // A positive value moves the element in the same direction as the mouse relative to the center.
+      // A negative value moves it in the opposite direction.
+      // Example: movement = 100 means element moves -50px to +50px.
+      const bgMovement = -50;       // Background: moves +/-30px. Negative makes it recede.
+      const bgOverlayMovement = -30; // Background overlay: moves +/-30px. Negative makes it recede.
+      const bgOverlayMovement2 = 20; // Background overlay: moves +/-30px. Negative makes it recede.
+      const h2TextMovement = -25;    // Typewriter H2: moves +/-15px
+      const h1TitleMovement = -20;  // Title H1: moves +/-10px, opposite direction
+      const spanDescMovement = -15;  // Description: moves +/-7.5px
+
+      // 1. Parallax for #home background
+      const bgOffsetX = normalizedX * bgMovement;
+      const bgOffsetY = normalizedY * bgMovement; // Using same factor for Y for consistent bg movement
+
+      // 2. Parallax for #home background overlay
+      const bgOverlayOffsetX = normalizedX * bgOverlayMovement;
+      const bgOverlayOffsetY = normalizedY * bgOverlayMovement; // Using same factor for Y for consistent bg movement      
+
+      // 2. Parallax for #home background overlay
+      const bgOverlayOffsetX2 = normalizedX * bgOverlayMovement2;
+      const bgOverlayOffsetY2 = normalizedY * bgOverlayMovement2; 
+
+      // TODO: Elegir backgrounds definitivos
+      gsap.to(bgImageEl, {
+        x: bgOffsetX,
+        y: bgOffsetY,
+        scale: 1.1, // Keep the background slightly scaled up
+        duration: 1, // Smooth, slightly lagging animation
+        ease: 'power2.out',
+        overwrite: 'auto' // Essential for smooth updates on rapid mouse moves
+      });
+
+      gsap.to(bgOverlay, {
+        x: bgOverlayOffsetX,
+        y: bgOverlayOffsetY,
+        scale: 1.1, // Keep the background slightly scaled up
+        duration: 1, // Smooth, slightly lagging animation
+        ease: 'power2.out',
+        overwrite: 'auto' // Essential for smooth updates on rapid mouse moves
+      });     
+      
+      gsap.to(bgOverlay2, {
+        x: bgOverlayOffsetX2,
+        y: bgOverlayOffsetY2,
+        scale: 1.1, // Keep the background slightly scaled up
+        duration: 1, // Smooth, slightly lagging animation
+        ease: 'power2.out',
+        overwrite: 'auto' // Essential for smooth updates on rapid mouse moves
+      });         
+
+      // TODO: Elegir si efecto parallax o onhover para los elementos de texto.
+      // // 2. Parallax for h2.text
+      if (h2TextEl) {
+        gsap.to(h2TextEl, {
+          // x: normalizedX * h2TextMovement,
+          // y: normalizedY * h2TextMovement,
+          opacity: 0, // Apply opacity when the item is going out of the scroll trigger
+          duration: 1,
+          ease: 'power2.out',
+          overwrite: 'auto',
+          paused: true, // Controlled by ScrollTrigger
+          scrollTrigger: {
+            trigger: bgImageEl,
+            start: 'center 50%',
+            end: 'top 10%',
+            scrub: 1,
+            markers: true, // Uncomment for debugging
+            once: true,
+          }
+          // scrollTrigger: {
+          //   trigger: h2TextEl,
+          //   start: 'top 80%',
+          //   end: 'bottom 50%',
+          //   scrub: 1,
+          //   markers: true, // Uncomment for debugging
+          //   once: true,
+          //   onLeave: () => gsap.to(h2TextEl, { opacity: 0 }), // Set opacity to 0 when leaving
+          //   onEnterBack: () => gsap.to(h2TextEl, { opacity: 1 }), // Restore opacity on enter
+          // }
+        });
+      }
+
+      // 3. Parallax for h1.home-text-title
+      if (h1TitleEl) {
+        gsap.to(h1TitleEl, {
+          // x: normalizedX * h1TitleMovement,
+          // y: normalizedY * h1TitleMovement,
+          duration: 1,
+          ease: 'power2.out',
+          overwrite: 'auto',
+          scrollTrigger: {
+            trigger: bgImageEl,
+            start: 'center 50%',
+            end: 'top 40%',
+            scrub: 1,
+            markers: true, // Uncomment for debugging
+            once: true,
+          }
+        });
+      }
+
+      // 4. Parallax for span.home-text-description
+      if (spanDescriptionEl) {
+        gsap.to(spanDescriptionEl, {
+          // x: normalizedX * spanDescMovement,
+          // y: normalizedY * spanDescMovement,
+          duration: 1,
+          ease: 'power2.out',
+          overwrite: 'auto',
+          scrollTrigger: {
+            trigger: bgImageEl,
+            start: 'center 50%',
+            end: 'top 40%',
+            scrub: 1,
+            markers: true, // Uncomment for debugging
+            once: true,
+          }
+        });
+      }
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      // Optional: Throttling like the jQuery example.
+      // If you find the animation too busy, you can enable this.
+      // clearTimeout(parallaxThrottleTimeoutId);
+      // parallaxThrottleTimeoutId = window.setTimeout(() => executeParallax(event), 50); // 50ms delay, adjust as needed
+
+      // Direct execution (often preferred with GSAP's overwrite and duration)
+      executeParallax(event);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    console.log('✅ Parallax: Mousemove listener added.');
+
+    // Cleanup function: runs when the component is unmounted
+    // return () => {
+    //   console.log('Parallax effect: Cleaning up.');
+    //   window.removeEventListener('mousemove', handleMouseMove);
+
+    //   // Optional: Reset elements to their initial state smoothly
+    //   gsap.to(homeSectionEl, {
+    //     backgroundPositionX: initialBgX,
+    //     backgroundPositionY: initialBgY,
+    //     duration: 0.5,
+    //     ease: 'power2.out'
+    //   });
+    //   gsap.to([h2TextEl, h1TitleEl, spanDescriptionEl], {
+    //     x: 0,
+    //     y: 0,
+    //     duration: 0.5,
+    //     ease: 'power2.out'
+    //   });
+    //   console.log('✅ Parallax: Mousemove listener removed and positions reset.');
+    // };
+  });
+
+
+
+
 </script>
 
 <section
   id="home"
   class="{$isMenuOpen ? 'blurred' : ''} absolute inset-0 h-screen w-screen z-10 flex flex-col justify-between" >
+
+  <!-- Background wrapper -->
+  <div class="background-wrapper">
+    <div class="background-image"></div>
+    <div class="background-overlay"></div>
+    <div class="background-overlay2"></div>
+  </div>
 
   <div class="home-gradient-wrapper">
     <div class="home-gradient"></div>
@@ -83,9 +294,9 @@
 
   <div transition:fade class="home-wrapper flex flex-col text-left flex-grow -mt-16">
 
-    <h2 class="text 2xl sm:text-6xl mb-4"><span bind:this={typewriterElement}></span></h2>
-    <h1 class="home-text-title">SEBASTIÁN GONZÁLEZ</h1>
-    <span class="home-text-description">
+    <h2 class="home-text-type" data-speed="0.85"><span bind:this={typewriterElement}></span></h2>
+    <h1 class="home-text-title" data-speed="0.90">SEBASTIÁN GONZÁLEZ</h1>
+    <span class="home-text-description" data-speed="0.95">
       Full-Stack Developer and Graphic Designer with 14+ years of experience. I combine strong technical knowledge with a background in graphic design,
       allowing me to <i>create functional</i> and aesthetically pleasing interfaces from conception to deployment.
     </span>
@@ -97,24 +308,63 @@
   </div>
 </section>
 
-<!-- Basic Animation Styles (Add to app.css or a global style block) -->
 <style lang="scss">
 
-
   #home {
-    /* background: linear-gradient(to bottom, #323232 0%, #3F3F3F 40%, #1C1C1C 150%), linear-gradient(to top, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.25) 200%);
-    background-blend-mode: multiply; */
-    // background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
-    // background-blend-mode: multiply,multiply;
-    background-image: url('/background/bg-block_02.jpg');
+    // background-image: url('/background/bg-block_02.jpg');
     background-position: center top;
     background-size: cover;
   }
+
+  .background-wrapper {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: -1; /* Ensure it stays behind other content */
+  }
+
+  .background-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('/background/bg-block_02.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: scale(1.1);
+    will-change: transform;
+  }
+
+  .background-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: url('/background/bg-overlay.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: scale(1);
+    will-change: transform;
+    mix-blend-mode: lighten;
+  }
+
+  .background-overlay2 {
+    position: absolute;
+    inset: 0;
+    background-image: url('/background/bg-overlay-2.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: scale(1);
+    will-change: transform;
+    opacity: 0.3;
+    mix-blend-mode: plus-lighter;
+  }  
+
   .home-wrapper {
     position: absolute;
     z-index: 99;
-    left: 10%;
-    bottom: 20%;   
+    margin-left: 80px;
+    margin-bottom: 80px;
+    bottom: 0;    
   }
   .home-gradient-wrapper {
     height: 100%;
@@ -139,13 +389,24 @@
   }
 
   h1.home-text-title {
+    font-family: var(--geometria-font);
     font-size: 4rem;
     font-weight: 700;
     color: var(--color-red);
     // text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
     line-height: 1.2;
-    animation: fadeInUp 1s ease-out forwards;
-    opacity: 0; /* Start hidden */
+    letter-spacing: 0.2rem;
+    // animation: fadeInUp 1s ease-out forwards;
+    // opacity: 0; /* Start hidden */
+  }
+  h2.home-text-type {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--color-white);
+    line-height: 1.2;
+    letter-spacing: 0.1rem;
+    // animation: fadeInUp 1s ease-out forwards;
+    // opacity: 0; /* Start hidden */
   }
 
   span.home-text-description {
@@ -156,8 +417,8 @@
     color: var(--color-white);
     line-height: 1.5;
     margin-top: 1rem;
-    animation: fadeInUp 1s ease-out forwards;
-    opacity: 0; /* Start hidden */
+    // animation: fadeInUp 1s ease-out forwards;
+    // opacity: 0; /* Start hidden */
   }
 
 
