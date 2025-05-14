@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
   import IconCode from "$lib/assets/icon-code.svg";
+  import SectionT from '$lib/components/SectionT.svelte';
 
 	// Svelte 5: $state for reactive variables
 	let hoveredItemId = $state<number | null>(null);
@@ -375,10 +376,30 @@
 </script>
 
 <div class="portfolio-container my-10">
+
+  <div class="w-full mb-10" >
+    <SectionT number="02" title="Portfolio" align="start" speedNumber={0.95} speedTitle={0.9} />
+  </div> 
+
+  <div class="w-full lg:w-3/4 mb-6 md:mb-8 lg:mb-12 text-right ">
+
+    <!-- <p class="main-text">
+      From responsive WordPress implementations to modern Svelte applications and Flutter mobile experiences, this collection demonstrates my versatile approach to digital creation.
+    </p> -->
+
+  <!-- <div class="container mx-auto flex justify-end mb-10 mt-10"> -->
+    <!-- <div class="w-full lg:w-3/4"> -->
+      <p class="main-text text-right">
+        From responsive WordPress implementations to modern Svelte applications and Flutter mobile experiences, this collection demonstrates my versatile approach to digital creation.
+      </p>
+    <!-- </div> -->
+  <!-- </div> -->
+  </div>
+
 	{#each portfolioItems as item (item.id)}
 		<div      
 			class="portfolio-item flex flex-col lg:flex-row items-center border-t-2 last:border-b-2 
-      transition-all duration-500 ease-in-out m-6 md:m-8 lg:m-12 rounded-lg border-red border-2"      
+      transition-all duration-500 ease-in-out mb-6 md:mb-8 lg:mb-12 rounded-lg border-red border-2"      
 			class:expanded={hoveredItemId === item.id}      
       onmouseenter={() => {
 				if (window.innerWidth > 1024) {

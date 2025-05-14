@@ -26,7 +26,7 @@
   - `transition:fade`: Applies fade effect for the background entry (duration controlled here).
   - `out:fade={{ duration: 300 }}`: Controls the fade-out when the preloader is removed.
 -->
-<div class="fixed inset-0 bg-black z-50 flex flex-col justify-center items-center"
+<div id="preloader" class="fixed inset-0 flex flex-col justify-center items-center"
   in:fade={{ duration: 200 }} out:fade={{ duration: 400 }} >
 	<!-- 
     Inner container for the animated elements (logo and text).
@@ -56,6 +56,11 @@
 
 
 <style lang="scss">
+
+  #preloader {
+    background-color: var(--color-black);
+  }
+
 	@keyframes spin-slow {
 		from {
 			transform: rotate(0deg);

@@ -211,7 +211,7 @@
             start: 'center 50%',
             end: 'top 40%',
             scrub: 1,
-            markers: true, // Uncomment for debugging
+            // markers: true, // Uncomment for debugging
             once: true,
           }
         });
@@ -230,7 +230,7 @@
             start: 'center 50%',
             end: 'top 40%',
             scrub: 1,
-            markers: true, // Uncomment for debugging
+            // markers: true, // Uncomment for debugging
             once: true,
           }
         });
@@ -282,6 +282,7 @@
   class="{$isMenuOpen ? 'blurred' : ''} absolute inset-0 h-screen w-screen z-10 flex flex-col justify-between" >
 
   <!-- Background wrapper -->
+  <!-- TODO: Add preload to images -->
   <div class="background-wrapper">
     <div class="background-image"></div>
     <div class="background-overlay"></div>
@@ -294,15 +295,17 @@
 
   <div transition:fade class="home-wrapper flex flex-col text-left flex-grow -mt-16">
 
-    <h2 class="home-text-type" data-speed="0.85"><span bind:this={typewriterElement}></span></h2>
-    <h1 class="home-text-title" data-speed="0.90">SEBASTIÁN GONZÁLEZ</h1>
-    <span class="home-text-description" data-speed="0.95">
-      Full-Stack Developer and Graphic Designer with 14+ years of experience. I combine strong technical knowledge with a background in graphic design,
-      allowing me to <i>create functional</i> and aesthetically pleasing interfaces from conception to deployment.
+    <h2 class="home-text-type" data-speed="1.2"><span bind:this={typewriterElement}></span></h2>
+    <h1 class="home-text-title" data-speed="1.15">SEBASTIÁN GONZÁLEZ</h1>
+    <span class="home-text-description" data-speed="1.1">
+      Crafting digital experiences that blend technical precision with creative design. <br>
+      Specialized in Svelte, Flutter, and WordPress solutions.
+      <!-- Full-Stack Developer and Graphic Designer with 14+ years of experience. I combine strong technical knowledge with a background in graphic design,
+      allowing me to <i>create functional</i> and aesthetically pleasing interfaces from conception to deployment. -->
     </span>
 
     <!-- Add maybe a subtle down arrow hint -->
-    <!-- <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">      
+    <!-- <div class="absolute bottom-10 left-0 transform  animate-bounce">      
       <img src="{ArrowDown}" alt=" Arrow Down" class="h-10 w-auto"/>
     </div> -->
   </div>
