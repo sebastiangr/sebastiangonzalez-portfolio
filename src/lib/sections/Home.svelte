@@ -298,8 +298,8 @@
     <h2 class="home-text-type" data-speed="1.2"><span bind:this={typewriterElement}></span></h2>
     <h1 class="home-text-title" data-speed="1.15">SEBASTIÁN GONZÁLEZ</h1>
     <span class="home-text-description" data-speed="1.1">
-      Crafting digital experiences that blend technical precision with creative design. <br>
-      Specialized in Svelte, Flutter, and WordPress solutions.
+      Crafting digital experiences that blend technical precision with creative design.
+      <!-- Specialized in Svelte, Flutter, and WordPress solutions. -->
       <!-- Full-Stack Developer and Graphic Designer with 14+ years of experience. I combine strong technical knowledge with a background in graphic design,
       allowing me to <i>create functional</i> and aesthetically pleasing interfaces from conception to deployment. -->
     </span>
@@ -367,7 +367,24 @@
     z-index: 99;
     margin-left: 80px;
     margin-bottom: 80px;
+    margin-right: 0;
     bottom: 0;    
+
+    @media screen and (max-width: 64rem) {
+      margin-left: 60px;
+      margin-bottom: 80px; 
+      margin-right: 80px;
+    }
+    @media screen and (max-width: 48rem) {
+      margin-left: 40px;
+      margin-right: 80px;
+      margin-bottom: 80px; 
+    }
+    @media screen and (max-width: 40rem) {
+      margin-left: 30px;
+      margin-right: 60px;
+      margin-bottom: 60px; 
+    }
   }
   .home-gradient-wrapper {
     height: 100%;
@@ -399,8 +416,21 @@
     // text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
     line-height: 1.2;
     letter-spacing: 0.2rem;
-    // animation: fadeInUp 1s ease-out forwards;
+    transition: font-size 0.3s ease-in-out;
+    animation: fadeIn 2s ease-out forwards;
     // opacity: 0; /* Start hidden */
+    @media screen and (max-width: 80rem) {
+      font-size: 3.5rem;  
+    }
+    @media screen and (max-width: 64rem) {
+      font-size: 2.5rem;  
+    }
+    // @media screen and (max-width: 48rem) {
+    //   font-size: 2rem;
+    // }
+    // @media screen and (max-width: 40rem) {
+    //   font-size: 2.5rem;
+    // }    
   }
   h2.home-text-type {
     font-size: 3.5rem;
@@ -408,8 +438,21 @@
     color: var(--color-white);
     line-height: 1.2;
     letter-spacing: 0.1rem;
-    // animation: fadeInUp 1s ease-out forwards;
-    // opacity: 0; /* Start hidden */
+    transition: font-size 0.3s ease-in-out;
+    animation: fadeIn 2s ease-out forwards;
+    opacity: 0; /* Start hidden */
+    @media screen and (max-width: 80rem) {
+      font-size: 2.5rem;  
+    }
+    @media screen and (max-width: 64rem) {
+      font-size: 2rem;  
+    }
+    @media screen and (max-width: 48rem) {
+      font-size: 1.8rem;
+    }
+    @media screen and (max-width: 40rem) {
+      font-size: 1.5rem;
+    }    
   }
 
   span.home-text-description {
@@ -420,10 +463,24 @@
     color: var(--color-white);
     line-height: 1.5;
     margin-top: 1rem;
-    // animation: fadeInUp 1s ease-out forwards;
-    // opacity: 0; /* Start hidden */
+    transition: font-size 0.3s ease-in-out;
+    animation: fadeIn 2s ease-out forwards;
+    opacity: 0; /* Start hidden */
+    @media screen and (max-width: 80rem) {
+      font-size: 1.2rem;  
+    }
+    @media screen and (max-width: 64rem) {
+      font-size: 1rem;  
+      width: 60%;
+    }
+    @media screen and (max-width: 48rem) {
+      font-size: 1rem;  
+      width: 100%;
+    }
+    // @media screen and (max-width: 40rem) {
+    //   font-size: 1.5rem;
+    // }      
   }
-
 
   /* Your styles */
   /* Make sure cursor is visible */
@@ -435,7 +492,6 @@
   .Typewriter__wrapper {
       color: inherit; /* Inherit text color from parent */
   }
-
 
   #home {    
     filter: blur(0px);
@@ -454,6 +510,10 @@
     -ms-filter: blur(6px);
   }
 
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 
   @keyframes fadeInUp {
     from { opacity: 0; transform: translate3d(0, 40px, 0); }
@@ -475,6 +535,5 @@
   .animate-bounce {
     animation: bounce 2s infinite;
   }
-
 
 </style>

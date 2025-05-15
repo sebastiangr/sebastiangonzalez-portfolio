@@ -159,6 +159,8 @@
           <SectionT number="01" title="About Me" align="centered" speedNumber={0.85} speedTitle={0.92} />
         </div> 
 
+        <AboutMe />
+
         <div class="flex">
           <div class="about-me-text w-3/4">
             <p class="main-text">
@@ -174,7 +176,7 @@
       </section>
 
 
-      <section id="portfolio" class="px-10 lg:px-16 xl:px-20">
+      <section id="portfolio" class="">
         <!-- <div class="w-full mb-10" >
           <SectionT number="02" title="Portfolio" align="start" speedNumber={0.95} speedTitle={0.9} />
         </div>  -->
@@ -186,9 +188,9 @@
       
       <section id="skills" >
 
-        <div class="w-full mb-10 item  " >
+        <!-- <div class="w-full mb-10 item  " >
           <SectionT number="03" title="Techs & Skills" align="end" speedNumber={0.9} speedTitle={0.95} />
-        </div> 
+        </div>  -->
 
         <Skills />
 
@@ -216,6 +218,7 @@
   </main>
 </div>
 
+<Navigation />
 
 
 <style>

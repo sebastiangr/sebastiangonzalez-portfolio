@@ -1,67 +1,105 @@
 <script>
   import SectionT from "$lib/components/SectionT.svelte";
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
   
   let tab = 'development';
 
-  onMount(() => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  // onMount(() => {
+  $effect(() => {
+    
+  
     const marquee = document.querySelector('.js-marquee');
     const inner = marquee.querySelector('.marquee-inner');
 
     // Clone the content to create a seamless loop
     const clone = inner.cloneNode(true);
     marquee.appendChild(clone);
-  });
+
+    const skillIntro = document.querySelector("#skill-intro");
+    const skillList = document.querySelector("#skill-list");
+
+    // Ensure both elements exist before applying GSAP
+    if (skillIntro && skillList) {
+      gsap.to(skillIntro, {
+        scrollTrigger: {
+          trigger: skillList,
+          start: "top top", // When the top of #skill-list hits the top of the viewport
+          end: "bottom bottom", // When the bottom of #skill-list hits the bottom of the viewport
+          pin: skillIntro, // Pin #skill-intro
+          pinSpacing: true, // Add spacing to avoid layout shifts
+          scrub: true, // Smooth scrubbing
+          markers: true, // Add this line
+        },
+      });
+    }
+
+  });    
+  // });
+
+
 
 </script>
 
 
-<div class="w-full flex flex-col pt-6 pb-20 px-10 lg:px-16 xl:px-20 text-white">
+<div class="w-full flex flex-row pt-6 pb-20 px-10 lg:px-16 xl:px-20 text-white">
 
-  <div class="flex justify-start mb-20 mt-10">
-    <div class="w-full lg:w-3/4">
-      <p class="main-text text-left">
-        I love <span>art, computers and tech.</span><br>
-        Each skill I've developed allows me to turn ideas into reality through code, design, and technical problem-solving. 
-      </p>
+  <div id="skill-intro" class="flex-col flex-1">
+    <div class="w-full mb-10 item">
+      <SectionT number="03" title="Skills" align="centered" speedNumber={0.9} speedTitle={0.95} />
+    </div> 
+
+    <div id="" class="flex justify-center mb-20 mt-10">
+      <div class="w-full lg:w-3/4">
+        <p class="main-text text-center">
+          I love <span>art, computers and tech.</span><br>
+          Each skill I've developed allows me to turn ideas into reality through code, design, and technical problem-solving. 
+        </p>
+      </div>
     </div>
   </div>
 
-  <div class="flex flex-col lg:flex-row items-stretch justify-center w-full mt-6">
-    <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-0">
-      <h3 class="skills-title">#Development</h3>
-      <ul class="skills-list">
-        <li><span>*</span> Modern Frontend with Svelte & SvelteKit.</li>
-        <li><span>*</span> Mobile experiences through Flutter & Dart.</li>
-        <li><span>*</span> Custom WordPress themes & plugins.</li>
-        <li><span>*</span> Responsive HTML5 & CSS3 mastery.</li>
-        <li><span>*</span> JavaScript & TypeScript implementation.</li>
-        <li><span>*</span> API integration & development.</li>
-      </ul>
-    </div>
-    <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-0">
-      <h3 class="skills-title">#Design</h3>
-      <ul class="skills-list">
-        <li><span>*</span> Interface design with focus on usability.</li>
-        <li><span>*</span> Digital illustration & graphics creation.</li>
-        <li><span>*</span> UI/UX principles & implementation.</li>
-        <li><span>*</span> Wireframing & prototyping.</li>
-        <li><span>*</span> Adobe Creative Suite expertise.</li>
-        <li><span>*</span> Figma & Penpot design workflows.</li>
-      </ul>
-    </div>
-    <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-0">
-      <h3 class="skills-title">#Dev Ops</h3>
-      <ul class="skills-list">
-        <li><span>*</span> Full deployment pipelines.</li>
-        <li><span>*</span> Database architecture (SQL & NoSQL).</li>
-        <li><span>*</span> Version control & collaboration.</li>
-        <li><span>*</span> Performance optimization.</li>
-        <li><span>*</span> Cross-browser & platform testing.</li>
-        <li><span>*</span> Security implementation.</li>
-      </ul>
+  <div id="skill-list" class="flex-1">
+    <div class="flex flex-col lg:flex-col items-stretch justify-center w-full mt-6">
+      <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-10">
+        <h3 class="skills-title">#Development</h3>
+        <ul class="skills-list">
+          <li><span>*</span> Modern Frontend with Svelte & SvelteKit.</li>
+          <li><span>*</span> Mobile experiences through Flutter & Dart.</li>
+          <li><span>*</span> Custom WordPress themes & plugins.</li>
+          <li><span>*</span> Responsive HTML5 & CSS3 mastery.</li>
+          <li><span>*</span> JavaScript & TypeScript implementation.</li>
+          <li><span>*</span> API integration & development.</li>
+        </ul>
+      </div>
+      <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-10">
+        <h3 class="skills-title">#Design</h3>
+        <ul class="skills-list">
+          <li><span>*</span> Interface design with focus on usability.</li>
+          <li><span>*</span> Digital illustration & graphics creation.</li>
+          <li><span>*</span> UI/UX principles & implementation.</li>
+          <li><span>*</span> Wireframing & prototyping.</li>
+          <li><span>*</span> Adobe Creative Suite expertise.</li>
+          <li><span>*</span> Figma & Penpot design workflows.</li>
+        </ul>
+      </div>
+      <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-10">
+        <h3 class="skills-title">#Dev Ops</h3>
+        <ul class="skills-list">
+          <li><span>*</span> Full deployment pipelines.</li>
+          <li><span>*</span> Database architecture (SQL & NoSQL).</li>
+          <li><span>*</span> Version control & collaboration.</li>
+          <li><span>*</span> Performance optimization.</li>
+          <li><span>*</span> Cross-browser & platform testing.</li>
+          <li><span>*</span> Security implementation.</li>
+        </ul>
+      </div>
     </div>
   </div>
+
 <!-- 
   <div class="flex flex-col items-center w-full mt-6">
 
@@ -145,6 +183,10 @@
     --move-final: -100%; /* End position */
   }
 
+  #skill-intro {
+    position: relative; /* Ensure proper positioning for GSAP pinning */
+  }
+
   p.main-text {
     span {
       background-color: var(--color-red);
@@ -154,6 +196,7 @@
   }
 
   .skills-wrapper {
+    width: 100%;
   }
 
   h3.skills-title {

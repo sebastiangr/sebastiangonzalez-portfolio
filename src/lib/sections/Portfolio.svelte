@@ -3,7 +3,6 @@
   import IconCode from "$lib/assets/icon-code.svg";
   import SectionT from '$lib/components/SectionT.svelte';
 
-	// Svelte 5: $state for reactive variables
 	let hoveredItemId = $state<number | null>(null);
 	let currentSlideshowImageIndex = $state(0);
 	let slideshowInterval = $state<number | null>(null);
@@ -211,7 +210,7 @@
 			id: 10,
 			client: "Cineclub Sharing App",
       stuff: "Web Development - Svelte 5 - PostgreSQL",
-			description: "CineClubApp is a Svelte-based web application designed to provide users with a platform to explore and manage their proposal movies for a comunity cinema club. The application features user authentication, movie browsing, and messaging functionalities.",
+			description: "CineClubApp is an Open source Svelte-based web application designed to provide users with a platform to explore and manage their proposal movies for a comunity cinema club. The application features user authentication, movie browsing, and messaging functionalities.",
 			status: "Under Development",    
       openSource: "https://github.com/sebastiangr/casavieja-cineclub-app",
 			defaultImage: 'https://placehold.co/600x400/000000/FFF', // Placeholder
@@ -226,7 +225,6 @@
 	];
 
 
-  // NEW CODE
   let preloadedSlideshows = $state<Record<number, boolean>>({}); // Track which item's slideshows are preloaded
 
   function preloadSlideshowImages(itemId: number) {
@@ -245,7 +243,6 @@
     }
   }
 
-  
   function handleMouseEnter(itemId: number) {
     if (hoveredItemId === itemId) {
       return;
@@ -375,25 +372,18 @@
 	}
 </script>
 
-<div class="portfolio-container my-10">
+<div class="portfolio-container px-6 md:px-10 lg:px-16 xl:px-20 my-10">
 
   <div class="w-full mb-10" >
-    <SectionT number="02" title="Portfolio" align="start" speedNumber={0.95} speedTitle={0.9} />
+    <SectionT number="02" title="Portfolio" align="centered" speedNumber={0.95} speedTitle={0.9} />
   </div> 
 
-  <div class="w-full lg:w-3/4 mb-6 md:mb-8 lg:mb-12 text-right ">
-
-    <!-- <p class="main-text">
-      From responsive WordPress implementations to modern Svelte applications and Flutter mobile experiences, this collection demonstrates my versatile approach to digital creation.
-    </p> -->
-
-  <!-- <div class="container mx-auto flex justify-end mb-10 mt-10"> -->
-    <!-- <div class="w-full lg:w-3/4"> -->
-      <p class="main-text text-right">
+  <div class="w-full flex justify-start md:justify-end mb-6 md:mb-8 lg:mb-12">
+    <div class="w-full lg:w-3/4">
+      <p class="main-text text-left md:text-right">
         From responsive WordPress implementations to modern Svelte applications and Flutter mobile experiences, this collection demonstrates my versatile approach to digital creation.
       </p>
-    <!-- </div> -->
-  <!-- </div> -->
+    </div>
   </div>
 
 	{#each portfolioItems as item (item.id)}
@@ -430,7 +420,7 @@
 					<h3 class="portfolio-title">{item.client}</h3>
 					<span class="portfolio-stuff">{item.stuff}</span>
 					<p class="portfolio-description text-gray-300 mb-6 text-base md:text-lg">{item.description}</p>
-					<div class="meta flex justify-between items-center text-sm">
+					<div class="flex flex-col md:flex-row gap-2 md:gap-0 justify-between items-start md:items-center text-sm">
 						{#if item.link}
 							<a href={item.link}
 								target="_blank"
@@ -497,6 +487,12 @@
     font-style: italic;
     font-weight: 600;
     color: var(--color-red);
+    transition: font-size 400ms ease;
+
+    @media screen and (max-width: 48rem) {
+      font-size: 1.5rem;
+      line-height: 1.8rem;
+    }
   }
   span.portfolio-stuff {
     display: block;
@@ -504,6 +500,11 @@
     font-weight: 500;
     color: var(--color-light);
     margin-bottom: 1.2rem;
+
+    @media screen and (max-width: 48rem) {
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
   }
   p.portfolio-description {
     font-size: 1rem;

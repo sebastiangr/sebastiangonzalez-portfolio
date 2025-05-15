@@ -7,30 +7,30 @@
   // TODO: Implementar que ambas arrow se escondan en el home, y que la arrowDown se esconda en contact
 
   // Derivar el índice actual como valor (no como función)
-  let index = $derived(() => get(currentIndex));
-  let list = $derived(() => get(anchors));
+  // let index = $derived(() => get(currentIndex));
+  // let list = $derived(() => get(anchors));
 
-  // Controlar visibilidad de flechas
-  let isHome = $derived(() => index() === 0);
-  let isLast = $derived(() => index() === list.length - 1);
+  // // Controlar visibilidad de flechas
+  // let isHome = $derived(() => index() === 0);
+  // let isLast = $derived(() => index() === list.length - 1);
 
-  // Navegación por anclas  
-  function scrollTo(index: number) {
-    const anchorList = get(anchors);
-    const target = document.querySelector(anchorList[index]);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth" });
-      currentIndex.set(index);
-    }
-  }
+  // // Navegación por anclas  
+  // function scrollTo(index: number) {
+  //   const anchorList = get(anchors);
+  //   const target = document.querySelector(anchorList[index]);
+  //   if (target) {
+  //     target.scrollIntoView({ behavior: "smooth" });
+  //     currentIndex.set(index);
+  //   }
+  // }
   
-  $effect(() => {
-    console.log("Navigation mounted");
+  // $effect(() => {
+  //   console.log("Navigation mounted");
 
-    return () => {
-      console.log("Navigation unmounted");
-    };
-  });
+  //   return () => {
+  //     console.log("Navigation unmounted");
+  //   };
+  // });
 
 </script>
 
@@ -38,8 +38,9 @@
   <!-- class:hidden={isHome} > -->
   <!-- Up Arrow -->
   
-    <button type="button"
-      onclick={() => scrollTo(index() - 1)} >
+    <!-- <button type="button"
+      onclick={() => scrollTo(index() - 1)} > -->
+    <button type="button" >
       <!-- class:hidden={currentIndex === 0} > -->
       <img src={ArrowUp} alt="Go to previous section" class="cursor-pointer" />
     </button>
@@ -47,8 +48,9 @@
 
     <!-- Flecha hacia abajo -->
   
-    <button type="button" 
-      onclick={() => scrollTo(index() + 1)}>
+    <button type="button" >
+    <!-- <button type="button" 
+      onclick={() => scrollTo(index() + 1)}>       -->
       <img src={ArrowDown} alt="Go to next section" class="cursor-pointer" />
     </button>
   
