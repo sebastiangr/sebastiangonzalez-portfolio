@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
 	import SectionTitle from "$lib/components/SectionTitle.svelte";
+	import SectionT from "$lib/components/SectionT.svelte";
 
   // This section is for displaying skills and technologies.
   // You can customize the skills and their styles as per your preference.
@@ -84,15 +85,17 @@
     </div>  
   </div> -->
 
+  <div class="w-full mb-10 item">
+    <SectionT number="04" title="Contact" align="centered" speedNumber={0.95} speedTitle={0.9} />
+  </div> 
 
-  <div
+  <!-- <div
     class="slider-container flex-1 px-6 lg:px-20"
     on:mouseenter={stopAutoplay}
     on:mouseleave={startAutoplay}
     role="region"
     aria-label="Slideshow"
   >
-    <!-- Slides -->
     {#each slides as slide, index}
       <div
         class="slide"
@@ -105,7 +108,6 @@
       </div>
     {/each}
 
-  <!-- Navigation Dots -->
     <div class="dots mb-20">
       {#each slides as _, index}
         <button
@@ -115,7 +117,7 @@
         ></button>
       {/each}
     </div>
-  </div>
+  </div> -->
 
 
   <!-- Contact Form -->

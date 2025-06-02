@@ -198,9 +198,9 @@
 
 
       <section id="contact" >
-        <div class="w-full mb-10" >
+        <!-- <div class="w-full mb-10" >
           <SectionT number="04" title="Contact" align="centered" speedNumber={0.95} speedTitle={0.9} />
-        </div> 
+        </div>  -->
 
         <Contact />
 

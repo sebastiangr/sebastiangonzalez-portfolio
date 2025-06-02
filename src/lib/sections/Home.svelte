@@ -182,7 +182,7 @@
             start: 'center 50%',
             end: 'top 10%',
             scrub: 1,
-            markers: true, // Uncomment for debugging
+            // markers: true, // Uncomment for debugging
             once: true,
           }
           // scrollTrigger: {

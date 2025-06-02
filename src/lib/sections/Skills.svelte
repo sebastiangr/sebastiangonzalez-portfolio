@@ -8,10 +8,7 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // onMount(() => {
-  $effect(() => {
-    
-  
+  $effect(() => {      
     const marquee = document.querySelector('.js-marquee');
     const inner = marquee.querySelector('.marquee-inner');
 
@@ -22,47 +19,62 @@
     const skillIntro = document.querySelector("#skill-intro");
     const skillList = document.querySelector("#skill-list");
 
-    // Ensure both elements exist before applying GSAP
-    if (skillIntro && skillList) {
-      gsap.to(skillIntro, {
-        scrollTrigger: {
-          trigger: skillList,
-          start: "top top", // When the top of #skill-list hits the top of the viewport
-          end: "bottom bottom", // When the bottom of #skill-list hits the bottom of the viewport
-          pin: skillIntro, // Pin #skill-intro
-          pinSpacing: true, // Add spacing to avoid layout shifts
-          scrub: true, // Smooth scrubbing
-          markers: true, // Add this line
-        },
+    // Ensure both elements exist and have dimensions before applying GSAP
+    if (skillIntro && skillList && skillIntro.offsetHeight > 0 && skillList.offsetHeight > 0) {
+      st = ScrollTrigger.create({ // Use ScrollTrigger.create for more direct control
+        trigger: skillIntro,    // Element that triggers the start of the animation/pin
+        pin: skillIntro,        // Element to pin (can be true, or the selector/element)
+        pinSpacing: false,      // As you had, prevents adding padding for the pinned element's space
+        start: "top top",       // When the top of skillIntro hits the top of the viewport
+        
+        // This is the key change:
+        endTrigger: skillList,  // The pin duration is determined by skillList
+        end: "bottom bottom",   // Pin lasts until the bottom of skillList hits the bottom of the viewport
+                                // (or where skillIntro is pinned, effectively viewport bottom if skillIntro is pinned at top)
+        
+        scrub: true,            // Smooth scrubbing
+        // markers: true,          // For debugging, remove in production
+        invalidateOnRefresh: true // Important for responsive designs, recalculates on resize
       });
+    } else if (skillIntro && skillList) {
+      console.warn("GSAP ScrollTrigger: #skill-intro or #skill-list has no height yet. Pinning might be inaccurate. Ensure content is loaded and visible.");
+      // You might want to use a MutationObserver or a small delay/retry if content loads asynchronously affecting height.
     }
 
+    // Cleanup function for $effect
+    return () => {
+      if (st) {
+        st.kill(); // Kill the ScrollTrigger instance to prevent memory leaks
+        // console.log("ScrollTrigger killed for skills section");
+      }
+      // If marquee cloning was also in $effect and not guarded, it should be cleaned here.
+      // But we moved it to onMount for one-time setup.
+    };
   });    
-  // });
-
-
 
 </script>
 
 
-<div class="w-full flex flex-row pt-6 pb-20 px-10 lg:px-16 xl:px-20 text-white">
+<div class="w-full flex flex-col lg:flex-row lg:justify-center pt-6 pb-20 px-10 lg:px-16 xl:px-20 text-white">
 
-  <div id="skill-intro" class="flex-col flex-1">
+  <div id="skill-intro" class="w-full lg:w-1/2 md:flex-1">
     <div class="w-full mb-10 item">
       <SectionT number="03" title="Skills" align="centered" speedNumber={0.9} speedTitle={0.95} />
     </div> 
 
-    <div id="" class="flex justify-center mb-20 mt-10">
+    <div id="" class="flex justify-center mb-10 mt-10">
       <div class="w-full lg:w-3/4">
         <p class="main-text text-center">
-          I love <span>art, computers and tech.</span><br>
+          <!-- I love <span>art, computers and tech.</span><br> -->
           Each skill I've developed allows me to turn ideas into reality through code, design, and technical problem-solving. 
         </p>
       </div>
     </div>
   </div>
 
-  <div id="skill-list" class="flex-1">
+  <div id="skill-list" class="w-full lg:w-1/2 md:flex-1">
+    <!-- Added a wrapper for the skill items if you want to control their collective height for scrolling -->
+    <div class="skills-list-content">     
     <div class="flex flex-col lg:flex-col items-stretch justify-center w-full mt-6">
       <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-10">
         <h3 class="skills-title">#Development</h3>
@@ -90,14 +102,21 @@
         <h3 class="skills-title">#Dev Ops</h3>
         <ul class="skills-list">
           <li><span>*</span> Full deployment pipelines.</li>
-          <li><span>*</span> Database architecture (SQL & NoSQL).</li>
+          <li><span>*</span> Database architecture (SQL & NoSQL).</li>          
           <li><span>*</span> Version control & collaboration.</li>
+          <li><span>*</span> Docker containerization.</li>
           <li><span>*</span> Performance optimization.</li>
           <li><span>*</span> Cross-browser & platform testing.</li>
           <li><span>*</span> Security implementation.</li>
         </ul>
       </div>
+      <!-- Add more content to #skill-list if you want to test longer scrolling -->
+      <!-- <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-10" style="height: 300px; background: #333;">Placeholder for more scroll</div>
+      <div class="skills-wrapper w-full lg:w-1/3 px-4 lg:px-6 mb-6 lg:mb-10" style="height: 300px; background: #444;">Placeholder for more scroll</div> -->
+
     </div>
+    </div>  
+    
   </div>
 
 <!-- 
@@ -146,7 +165,7 @@
 
 <div class="marquee running js-marquee mb-20 md:mb-32">
   <div class="marquee-inner">
-    <span>Svelte / WordPress / Node / JavaScript / Flutter / PostgreSQL / Docker / HTML5 / CSS3 / </span>
+    <span> Svelte / WordPress / Node / JavaScript / Flutter / PostgreSQL / Docker / HTML5 / CSS3 / </span>
   </div>
 </div>
 
@@ -178,6 +197,8 @@
   --move-final: calc(-50% + var(--offset));
 } */
 
+
+
   :root {
     --move-initial: 0%; /* Start position */
     --move-final: -100%; /* End position */
@@ -185,7 +206,14 @@
 
   #skill-intro {
     position: relative; /* Ensure proper positioning for GSAP pinning */
+    padding-bottom: 50px; /* Example padding */
+    background: linear-gradient(180deg,rgb(18, 18, 18) 85%, rgba(18, 18, 18, 0.7) 90%, rgba(2, 2, 2, 0) 100%);
   }
+  #skill-list {
+    /* background-color: rgba(0, 255, 0, 0.1); */ /* For visualizing bounds */
+    /* Ensure it has enough content to be taller than skill-intro or viewport */
+  }
+
 
   p.main-text {
     span {
@@ -279,8 +307,6 @@
     }
   }
 
-
-
   .tabs-wrapper {
     display: flex;
     justify-content: center;
@@ -318,4 +344,3 @@
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
   }
 </style>
-<!-- background-image: linear-gradient(to right, #434343 0%, black 100%); -->
