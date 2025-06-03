@@ -19,6 +19,7 @@
     const skillIntro = document.querySelector("#skill-intro");
     const skillList = document.querySelector("#skill-list");
 
+    // TODO: Fix the st variable.
     // Ensure both elements exist and have dimensions before applying GSAP
     if (skillIntro && skillList && skillIntro.offsetHeight > 0 && skillList.offsetHeight > 0) {
       st = ScrollTrigger.create({ // Use ScrollTrigger.create for more direct control
@@ -208,6 +209,7 @@
     position: relative; /* Ensure proper positioning for GSAP pinning */
     padding-bottom: 50px; /* Example padding */
     background: linear-gradient(180deg,rgb(18, 18, 18) 85%, rgba(18, 18, 18, 0.7) 90%, rgba(2, 2, 2, 0) 100%);
+    /* margin-top: -40px !important; */
   }
   #skill-list {
     /* background-color: rgba(0, 255, 0, 0.1); */ /* For visualizing bounds */
